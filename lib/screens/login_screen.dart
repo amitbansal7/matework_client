@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:Matework/network/auth_rest_client.dart';
 import 'package:Matework/screens/otp_screen.dart';
 import 'package:Matework/widgets/my_snackbar.dart';
@@ -17,6 +19,10 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String _countryCode = "+91";
   TextEditingController phoneNumberController = TextEditingController();
+
+  String _finalPhone() {
+    return _countryCode + phoneNumberController.value.text;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,10 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 hintText: "Phone Number",
               ),
               controller: phoneNumberController,
-              onChanged: (value) {
-                // this.phoneNo=value;
-                print(value);
-              },
+              onChanged: (value) {},
             ),
           ),
         ],
@@ -115,21 +118,20 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         onPressed: () {
           final ctx = context;
-          authClient
-              .sendOtp(_countryCode + phoneNumberController.value.text)
-              .then((it) {
-            Scaffold.of(ctx).showSnackBar(
-                MySnackBar(message: it.message, error: false).getSnackbar());
-            Navigator.of(context).pushNamed(OtpScreen.routeName);
+          authClient.sendOtp(_finalPhone()).then((it) {
+            // Scaffold.of(ctx).showSnackBar(
+            //     MySnackBar(message: it.message, error: false).getSnackbar());
+            Navigator.of(context).pushNamed(OtpScreenWrapper.routeName,
+                arguments: {"phone": _finalPhone()});
           }).catchError((Object obj) {
             // non-200 error goes here.
             switch (obj.runtimeType) {
               case DioError:
                 final res = (obj as DioError).response;
-                Scaffold.of(context).showSnackBar(
-                  MySnackBar(message: res.statusMessage, error: true)
-                      .getSnackbar(),
-                );
+                // Scaffold.of(context).showSnackBar(
+                //   MySnackBar(message: res.data["message"], error: true)
+                //       .getSnackbar(),
+                // );
                 logger
                     .e("Got error : ${res.statusCode} -> ${res.statusMessage}");
                 break;

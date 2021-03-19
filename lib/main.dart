@@ -1,9 +1,14 @@
+// @dart=2.9
+
 import 'package:Matework/network/auth_rest_client.dart';
 import 'package:Matework/network/response/api_response.dart';
 import 'package:Matework/screens/auth_screen.dart';
 import 'package:Matework/screens/home_screen.dart';
 import 'package:Matework/screens/login_screen.dart';
 import 'package:Matework/screens/otp_screen.dart';
+import 'package:Matework/screens/user_chat_screen.dart';
+import 'package:Matework/screens/user_profile_screen.dart';
+import 'package:Matework/widgets/slide_left_route.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
@@ -38,15 +43,34 @@ class MyApp extends StatelessWidget {
             ],
             child: MaterialApp(
               title: 'Flutter Demo',
-              theme: ThemeData(
-                primarySwatch: Colors.blue,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-              ),
-              routes: {
-                LoginScreen.routeName: (context) => LoginScreen(),
-                HomeScreen.routeName: (context) => HomeScreen(),
-                OtpScreen.routeName: (context) => OtpScreen(),
-                // DetailScreen.routeName: (context) => DetailScreen(),
+              // routes: {
+              //   LoginScreen.routeName: (context) => LoginScreen(),
+              //   HomeScreen.routeName: (context) => HomeScreen(),
+              //   OtpScreenWrapper.routeName: (context) => OtpScreenWrapper(),
+              //   UserProfileScreen.routeName: (context) => UserProfileScreen(),
+              //   // DetailScreen.routeName: (context) => DetailScreen(),
+              // },
+              onGenerateRoute: (settings) {
+                final arguments = settings.arguments as Map<String, dynamic>;
+                if (settings.name == LoginScreen.routeName) {
+                  return SlideLeftRoute(page: LoginScreen());
+                }
+                if (settings.name == HomeScreen.routeName) {
+                  return SlideLeftRoute(page: HomeScreen());
+                }
+                if (settings.name == OtpScreenWrapper.routeName) {
+                  return SlideLeftRoute(
+                      page: OtpScreenWrapper(phone: arguments["phone"]));
+                }
+                if (settings.name == UserProfileScreen.routeName) {
+                  return SlideLeftRoute(page: UserProfileScreen());
+                }
+                if (settings.name == UserChatScreen.routeName) {
+                  return SlideLeftRoute(
+                      page: UserChatScreen(userId: arguments["userId"]));
+                }
+                // unknown route
+                return MaterialPageRoute(builder: (_) => AuthScreen());
               },
               home: AuthScreen(),
             ),
@@ -58,16 +82,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// class DetailScreen extends StatelessWidget {
-//   static final routeName = "details";
-//   @override
-//   Widget build(BuildContext context) {
-//     final dio = Provider.of<Dio>(context, listen: false);
-//     return Scaffold(
-//       body: Center(
-//         child: Text(dio.options.headers[MyApp.AUTH]),
-//       ),
-//     );
-//   }
-// }

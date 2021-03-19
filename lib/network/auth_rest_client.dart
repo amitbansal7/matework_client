@@ -1,11 +1,14 @@
+// @dart=2.9
+
 import 'package:Matework/network/response/api_response.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart' hide Headers;
+import '../utils.dart';
 import './response/auth_response.dart';
 import './response/api_response.dart';
 part 'auth_rest_client.g.dart';
 
-@RestApi(baseUrl: "http://192.168.1.7:3000/api/v1/")
+@RestApi(baseUrl: "$BASE_API_URL/v1/")
 abstract class AuthRestClient {
   factory AuthRestClient(Dio dio, {String baseUrl}) = _AuthRestClient;
 

@@ -1,3 +1,6 @@
+// @dart=2.9
+
+import 'package:Matework/network/response/invites_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 import './auth_response.dart';
 
@@ -27,6 +30,10 @@ class _Converter<T> implements JsonConverter<T, Object> {
         json.containsKey('user') &&
         json.containsKey('token')) {
       return AuthResponse.fromJson(json) as T;
+    }
+
+    if (json is Map<String, dynamic> && json.containsKey('invites')) {
+      return InvitesResponse.fromJson(json) as T;
     }
 
     return json as T;
