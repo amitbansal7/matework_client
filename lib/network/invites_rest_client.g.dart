@@ -60,4 +60,27 @@ class _InvitesRestClient implements InvitesRestClient {
     );
     return value;
   }
+
+  @override
+  Future<ApiResponse<String>> deleteInvite(inviteId) async {
+    ArgumentError.checkNotNull(inviteId, 'inviteId');
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _data = {'invite_id': inviteId};
+    _data.removeWhere((k, v) => v == null);
+    final _result = await _dio.request<Map<String, dynamic>>('',
+        queryParameters: queryParameters,
+        options: RequestOptions(
+            method: 'DELETE',
+            headers: <String, dynamic>{},
+            extra: _extra,
+            contentType: 'application/x-www-form-urlencoded',
+            baseUrl: baseUrl),
+        data: _data);
+    final value = ApiResponse<String>.fromJson(
+      _result.data,
+      (json) => json as String,
+    );
+    return value;
+  }
 }

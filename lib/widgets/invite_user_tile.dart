@@ -54,37 +54,43 @@ class InviteUserTile extends StatelessWidget {
   void _acceptInvite(Invite invite, BuildContext context) async {
     final viewModel = Provider.of<InvitesViewModel>(context, listen: false);
     final response = await viewModel.acceptInvite(invite.id!);
-    if (response == null) {
-      ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
-        message: "Invite Accepted",
-        error: false,
-      ).getSnackbar());
+    if (response.item1) {
       Navigator.pushNamed(context, UserChatScreen.routeName,
           arguments: {"userId": invite.userId!});
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
-        message: response,
-        error: true,
-      ).getSnackbar());
     }
+    ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+      message: response.item2,
+      error: !response.item1,
+    ).getSnackbar());
+  }
+
+  void _deleteInvite(Invite invite, BuildContext context) async {
+    final viewModel = Provider.of<InvitesViewModel>(context, listen: false);
+    final response = await viewModel.deleteInvite(invite.id!);
+    ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+      message: response.item2,
+      error: !response.item1,
+    ).getSnackbar());
   }
 
   showAlertDialog(BuildContext context) {
-    Widget cancelButton = TextButton(
-      child: Text("Cancel"),
-      onPressed: () {},
-    );
-    Widget continueButton = TextButton(
-      child: Text("Continue"),
-      onPressed: () {},
-    );
-
     AlertDialog alert = AlertDialog(
       title: Text("Reject Connect Invite"),
       content: Text("Are you sure you want to reject invite?"),
       actions: [
-        cancelButton,
-        continueButton,
+        TextButton(
+          child: Text("No"),
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+        ),
+        TextButton(
+          child: Text("Yes"),
+          onPressed: () {
+            _deleteInvite(invite, context);
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+        ),
       ],
     );
 
