@@ -106,11 +106,10 @@ class _OtpScreenState extends State<OtpScreen> {
                       switch (obj.runtimeType) {
                         case DioError:
                           final res = (obj as DioError).response;
-                          Scaffold.of(context).showSnackBar(
-                            MySnackBar(
-                                    message: res.data["message"], error: true)
-                                .getSnackbar(),
-                          );
+                          ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+                                  message: res.data["message"], error: true)
+                              .getSnackbar());
+
                           logger.e(
                               "Wrong creds ${res.statusCode} -> ${res.statusMessage}");
                           break;

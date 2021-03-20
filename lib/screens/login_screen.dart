@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:Matework/network/auth_rest_client.dart';
 import 'package:Matework/screens/otp_screen.dart';
+import 'package:Matework/utils.dart';
 import 'package:Matework/widgets/my_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -128,10 +129,10 @@ class _LoginScreenState extends State<LoginScreen> {
             switch (obj.runtimeType) {
               case DioError:
                 final res = (obj as DioError).response;
-                // Scaffold.of(context).showSnackBar(
-                //   MySnackBar(message: res.data["message"], error: true)
-                //       .getSnackbar(),
-                // );
+                ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+                  message: SOMETHING_WRONG,
+                  error: true,
+                ).getSnackbar());
                 logger
                     .e("Got error : ${res.statusCode} -> ${res.statusMessage}");
                 break;

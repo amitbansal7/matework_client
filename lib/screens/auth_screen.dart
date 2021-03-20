@@ -24,7 +24,7 @@ class AuthScreen extends StatelessWidget {
                 },
               )
             ],
-            child: AuthWidget(),
+            child: Scaffold(body: AuthWidget()),
           );
         } else {
           return Center(child: CircularProgressIndicator());
