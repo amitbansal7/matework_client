@@ -54,23 +54,19 @@ class MyApp extends StatelessWidget {
                 final arguments = settings.arguments as Map<String, dynamic>;
                 if (settings.name == LoginScreen.routeName) {
                   return SlideLeftRoute(page: LoginScreen());
-                }
-                if (settings.name == HomeScreen.routeName) {
+                } else if (settings.name == HomeScreen.routeName) {
                   return SlideLeftRoute(page: HomeScreen());
-                }
-                if (settings.name == OtpScreenWrapper.routeName) {
+                } else if (settings.name == OtpScreenWrapper.routeName) {
                   return SlideLeftRoute(
                       page: OtpScreenWrapper(phone: arguments["phone"]));
-                }
-                if (settings.name == UserProfileScreen.routeName) {
+                } else if (settings.name == UserProfileScreen.routeName) {
                   return SlideLeftRoute(page: UserProfileScreen());
-                }
-                if (settings.name == UserChatScreen.routeName) {
+                } else if (settings.name == UserChatScreen.routeName) {
                   return SlideLeftRoute(
                       page: UserChatScreen(userId: arguments["userId"]));
+                } else {
+                  return MaterialPageRoute(builder: (_) => AuthScreen());
                 }
-                // unknown route
-                return MaterialPageRoute(builder: (_) => AuthScreen());
               },
               home: AuthScreen(),
             ),
