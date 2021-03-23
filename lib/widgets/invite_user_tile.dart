@@ -3,6 +3,7 @@ import 'package:Matework/screens/user_chat_screen.dart';
 import 'package:Matework/screens/user_profile_screen.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
 import 'package:Matework/widgets/my_snackbar.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,10 +13,14 @@ class InviteUserTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: CircleAvatar(
-        radius: MediaQuery.of(context).size.width / 14,
-        backgroundImage: NetworkImage(
-            'https://avatars.githubusercontent.com/u/20418870?s=460&u=257535507e273cdc734928e60132cbd0d6668fda&v=4'),
+      leading: ClipOval(
+        child: CachedNetworkImage(
+          imageUrl: invite.userAvatar ?? "",
+          placeholder: (context, url) =>
+              Image.asset("assets/images/avatar_placeholder.png"),
+          errorWidget: (context, url, error) =>
+              Image.asset("assets/images/avatar_placeholder.png"),
+        ),
       ),
       title: Text(
         "${invite.userFirstName} ${invite.userLastName}",

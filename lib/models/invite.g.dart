@@ -14,6 +14,7 @@ Invite _$InviteFromJson(Map<String, dynamic> json) {
     userId: json['userId'] as int,
     userFirstName: json['userFirstName'] as String,
     userLastName: json['userLastName'] as String,
+    userAvatar: json['userAvatar'] as String,
   );
 }
 
@@ -24,4 +25,5 @@ Map<String, dynamic> _$InviteToJson(Invite instance) => <String, dynamic>{
       'userId': instance.userId,
       'userFirstName': instance.userFirstName,
       'userLastName': instance.userLastName,
+      'userAvatar': instance.userAvatar,
     };

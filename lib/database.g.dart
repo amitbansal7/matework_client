@@ -81,7 +81,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Invite` (`id` INTEGER, `message` TEXT, `createdAt` INTEGER, `userId` INTEGER, `userFirstName` TEXT, `userLastName` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Invite` (`id` INTEGER, `message` TEXT, `createdAt` INTEGER, `userId` INTEGER, `userFirstName` TEXT, `userLastName` TEXT, `userAvatar` TEXT, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -98,13 +98,27 @@ class _$AppDatabase extends AppDatabase {
 
 class _$InviteRepository extends InviteRepository {
   _$InviteRepository(this.database, this.changeListener)
-      : _queryAdapter = QueryAdapter(database);
+      : _queryAdapter = QueryAdapter(database),
+        _inviteInsertionAdapter = InsertionAdapter(
+            database,
+            'Invite',
+            (Invite item) => <String, dynamic>{
+                  'id': item.id,
+                  'message': item.message,
+                  'createdAt': item.createdAt,
+                  'userId': item.userId,
+                  'userFirstName': item.userFirstName,
+                  'userLastName': item.userLastName,
+                  'userAvatar': item.userAvatar
+                });
 
   final sqflite.DatabaseExecutor database;
 
   final StreamController<String> changeListener;
 
   final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<Invite> _inviteInsertionAdapter;
 
   @override
   Future<List<Invite>> findAllInvites() async {
@@ -115,22 +129,8 @@ class _$InviteRepository extends InviteRepository {
             createdAt: row['createdAt'] as int,
             userId: row['userId'] as int,
             userFirstName: row['userFirstName'] as String,
-            userLastName: row['userLastName'] as String));
-  }
-
-  @override
-  Future<void> insertInvite(int id, String message, int createdAt, int userId,
-      String userFirstNamee, String userLastName) async {
-    await _queryAdapter.queryNoReturn(
-        'INSERT OR REPLACE INTO Invite (id, message, createdAt, userId, userFirstName, userLastName) VALUES (?, ?, ?, ?, ?, ?)',
-        arguments: <dynamic>[
-          id,
-          message,
-          createdAt,
-          userId,
-          userFirstNamee,
-          userLastName
-        ]);
+            userLastName: row['userLastName'] as String,
+            userAvatar: row['userAvatar'] as String));
   }
 
   @override
@@ -142,5 +142,10 @@ class _$InviteRepository extends InviteRepository {
   Future<void> deleteById(int id) async {
     await _queryAdapter.queryNoReturn('DELETE FROM Invite where id = ?',
         arguments: <dynamic>[id]);
+  }
+
+  @override
+  Future<void> insertInvite(Invite invite) async {
+    await _inviteInsertionAdapter.insert(invite, OnConflictStrategy.abort);
   }
 }

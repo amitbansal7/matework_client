@@ -13,12 +13,21 @@ class User {
   @JsonKey(name: 'last_name')
   final String? lastName;
 
+  @JsonKey(name: 'avatar')
+  final String? avatar;
+
   final String? email;
 
   @JsonKey(name: 'phone_number')
   final String? phoneNumber;
 
-  User({this.id, this.firstName, this.lastName, this.email, this.phoneNumber});
+  User(
+      {this.id,
+      this.firstName,
+      this.lastName,
+      this.email,
+      this.phoneNumber,
+      this.avatar});
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);

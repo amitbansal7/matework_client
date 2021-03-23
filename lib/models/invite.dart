@@ -20,6 +20,7 @@ class Invite {
   final int? userId;
   final String? userFirstName;
   final String? userLastName;
+  final String? userAvatar;
 
   Invite(
       {this.id,
@@ -27,7 +28,8 @@ class Invite {
       this.createdAt,
       this.userId,
       this.userFirstName,
-      this.userLastName});
+      this.userLastName,
+      this.userAvatar});
 
   factory Invite.fromJson(Map<String, dynamic> json) => _$InviteFromJson(json);
   Map<String, dynamic> toJson() => _$InviteToJson(this);

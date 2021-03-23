@@ -6,10 +6,19 @@ abstract class InviteRepository {
   @Query('SELECT * FROM Invite')
   Future<List<Invite>> findAllInvites();
 
-  @Query(
-      'INSERT OR REPLACE INTO Invite (id, message, createdAt, userId, userFirstName, userLastName) VALUES (:id, :message, :createdAt, :userId, :userFirstName, :userLastName)')
-  Future<void> insertInvite(int? id, String? message, int? createdAt,
-      int? userId, String? userFirstNamee, String? userLastName);
+  // @Query(
+  //     'INSERT INTO Invite (id, message, createdAt, userId, userFirstName, userLastName, userAvatar) VALUES (:id, :message, :createdAt, :userId, :userFirstName, :userLastName, :userAvatar)')
+  // Future<void> insertInvite(
+  //     int? id,
+  //     String? message,
+  //     int? createdAt,
+  //     int? userId,
+  //     String? userFirstNamee,
+  //     String? userLastName,
+  //     String? userAvatar);
+
+  @insert
+  Future<void> insertInvite(Invite invite);
 
   @Query("DELETE FROM Invite")
   Future<void> deleteAll();

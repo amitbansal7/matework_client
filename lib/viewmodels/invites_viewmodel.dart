@@ -28,9 +28,8 @@ class InvitesViewModel extends ChangeNotifier {
   }
 
   void getAllInvites() async {
-    _checkedFromApi = false;
     _invites = await inviteRepository!.findAllInvites();
-
+    notifyListeners();
     getInvitesFromApi();
   }
 
@@ -66,12 +65,15 @@ class InvitesViewModel extends ChangeNotifier {
       inviteRepository?.deleteAll();
       invites?.data?.invites?.forEach((inviteResponse) {
         inviteRepository!.insertInvite(
-          inviteResponse.id,
-          inviteResponse.message,
-          inviteResponse.createdAt,
-          inviteResponse.user?.id,
-          inviteResponse.user?.firstName,
-          inviteResponse.user?.lastName,
+          Invite(
+            id: inviteResponse.id,
+            message: inviteResponse.message,
+            createdAt: inviteResponse.createdAt,
+            userId: inviteResponse.user?.id,
+            userFirstName: inviteResponse.user?.firstName,
+            userLastName: inviteResponse.user?.lastName,
+            userAvatar: inviteResponse.user?.avatar,
+          ),
         );
       });
 
