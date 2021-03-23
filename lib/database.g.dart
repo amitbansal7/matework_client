@@ -122,7 +122,8 @@ class _$InviteRepository extends InviteRepository {
 
   @override
   Future<List<Invite>> findAllInvites() async {
-    return _queryAdapter.queryList('SELECT * FROM Invite',
+    return _queryAdapter.queryList(
+        'SELECT * FROM Invite ORDER BY createdAt DESC',
         mapper: (Map<String, dynamic> row) => Invite(
             id: row['id'] as int,
             message: row['message'] as String,

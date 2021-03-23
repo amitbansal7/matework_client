@@ -3,7 +3,7 @@ import 'package:floor/floor.dart';
 
 @dao
 abstract class InviteRepository {
-  @Query('SELECT * FROM Invite')
+  @Query('SELECT * FROM Invite ORDER BY createdAt DESC')
   Future<List<Invite>> findAllInvites();
 
   // @Query(
