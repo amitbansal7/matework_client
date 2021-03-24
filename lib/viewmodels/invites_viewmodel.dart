@@ -53,9 +53,9 @@ class InvitesViewModel extends ChangeNotifier {
     }
   }
 
-  void deleteInviteAndNotify(int inviteId) {
+  void deleteInviteAndNotify(int inviteId) async {
     _invites.removeWhere((invite) => invite.id == inviteId);
-    inviteRepository?.deleteById(inviteId);
+    await inviteRepository?.deleteById(inviteId);
     notifyListeners();
   }
 

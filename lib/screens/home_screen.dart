@@ -2,11 +2,14 @@
 
 import 'package:Matework/database.dart';
 import 'package:Matework/network/auth_rest_client.dart';
+import 'package:Matework/network/chats_rest_client.dart';
 import 'package:Matework/network/invites_rest_client.dart';
+import 'package:Matework/repositories/chats_repository.dart';
 import 'package:Matework/repositories/invites_repository.dart';
 import 'package:Matework/screens/chats_screen.dart';
 import 'package:Matework/screens/invites_screen.dart';
 import 'package:Matework/screens/login_screen.dart';
+import 'package:Matework/viewmodels/chats_viewmodel.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart' hide Headers;
@@ -65,7 +68,17 @@ class _HomeScreenState extends State<HomeScreen> {
             return InvitesRestClient(dio);
           },
         ),
+        ProxyProvider<Dio, ChatsRestClient>(
+          update: (_, dio, __) {
+            return ChatsRestClient(dio);
+          },
+        ),
         FutureProvider<AppDatabase>.value(value: createDb(), initialData: db),
+        ProxyProvider<AppDatabase, ChatsRepository>(
+          update: (_, db, __) {
+            return db.chatsRepository;
+          },
+        ),
         ProxyProvider<AppDatabase, InviteRepository>(
           update: (_, db, __) {
             return db.inviteRepository;
@@ -77,6 +90,15 @@ class _HomeScreenState extends State<HomeScreen> {
           update: (_, inviteRepository, invitesRestClient, viewModel) {
             viewModel.setInviteRepository = inviteRepository;
             viewModel.setInvitesRestClient = invitesRestClient;
+            return viewModel;
+          },
+        ),
+        ChangeNotifierProxyProvider2<ChatsRepository, ChatsRestClient,
+            ChatsViewModel>(
+          create: (_) => ChatsViewModel(),
+          update: (_, chatsRepository, chatsRestClient, viewModel) {
+            viewModel.setChatsRepository = chatsRepository;
+            viewModel.setChatsRestClient = chatsRestClient;
             return viewModel;
           },
         ),

@@ -63,6 +63,8 @@ class _$AppDatabase extends AppDatabase {
 
   InviteRepository _inviteRepositoryInstance;
 
+  ChatsRepository _chatsRepositoryInstance;
+
   Future<sqflite.Database> open(String path, List<Migration> migrations,
       [Callback callback]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
@@ -82,6 +84,8 @@ class _$AppDatabase extends AppDatabase {
       onCreate: (database, version) async {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `Invite` (`id` INTEGER, `message` TEXT, `createdAt` INTEGER, `userId` INTEGER, `userFirstName` TEXT, `userLastName` TEXT, `userAvatar` TEXT, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `ChatUser` (`id` INTEGER, `firstName` TEXT, `lastName` TEXT, `avatar` TEXT, `inviteId` INTEGER, `updatedAt` INTEGER, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -93,6 +97,12 @@ class _$AppDatabase extends AppDatabase {
   InviteRepository get inviteRepository {
     return _inviteRepositoryInstance ??=
         _$InviteRepository(database, changeListener);
+  }
+
+  @override
+  ChatsRepository get chatsRepository {
+    return _chatsRepositoryInstance ??=
+        _$ChatsRepository(database, changeListener);
   }
 }
 
@@ -148,5 +158,52 @@ class _$InviteRepository extends InviteRepository {
   @override
   Future<void> insertInvite(Invite invite) async {
     await _inviteInsertionAdapter.insert(invite, OnConflictStrategy.abort);
+  }
+}
+
+class _$ChatsRepository extends ChatsRepository {
+  _$ChatsRepository(this.database, this.changeListener)
+      : _queryAdapter = QueryAdapter(database),
+        _chatUserInsertionAdapter = InsertionAdapter(
+            database,
+            'ChatUser',
+            (ChatUser item) => <String, dynamic>{
+                  'id': item.id,
+                  'firstName': item.firstName,
+                  'lastName': item.lastName,
+                  'avatar': item.avatar,
+                  'inviteId': item.inviteId,
+                  'updatedAt': item.updatedAt
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<ChatUser> _chatUserInsertionAdapter;
+
+  @override
+  Future<List<ChatUser>> findChatUsers() async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM ChatUser ORDER BY updatedAt DESC',
+        mapper: (Map<String, dynamic> row) => ChatUser(
+            id: row['id'] as int,
+            firstName: row['firstName'] as String,
+            lastName: row['lastName'] as String,
+            avatar: row['avatar'] as String,
+            inviteId: row['inviteId'] as int,
+            updatedAt: row['updatedAt'] as int));
+  }
+
+  @override
+  Future<void> deleteAllChatUsers() async {
+    await _queryAdapter.queryNoReturn('DELETE FROM ChatUser');
+  }
+
+  @override
+  Future<void> insertChatUser(ChatUser chatUser) async {
+    await _chatUserInsertionAdapter.insert(chatUser, OnConflictStrategy.abort);
   }
 }

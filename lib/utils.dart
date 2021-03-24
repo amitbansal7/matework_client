@@ -1,6 +1,6 @@
 import 'dart:io';
 
-const String BASE_API_URL = "http://192.168.1.9:3000/api";
+const String BASE_API_URL = "http://192.168.1.8:3000/api";
 const String SOMETHING_WRONG = "Something Went Wrong. Try again after sometime";
 
 Future<bool> checkInternet() async {
