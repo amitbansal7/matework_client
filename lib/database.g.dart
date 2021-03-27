@@ -83,7 +83,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `Invite` (`id` INTEGER, `message` TEXT, `createdAt` INTEGER, `userId` INTEGER, `userFirstName` TEXT, `userLastName` TEXT, `userAvatar` TEXT, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `Invite` (`id` INTEGER, `message` TEXT, `createdAt` INTEGER, `userId` INTEGER, `userFirstName` TEXT, `userLastName` TEXT, `userAvatar` TEXT, `seen` INTEGER, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `ChatUser` (`id` INTEGER, `firstName` TEXT, `lastName` TEXT, `avatar` TEXT, `inviteId` INTEGER, `updatedAt` INTEGER, PRIMARY KEY (`id`))');
 
@@ -119,7 +119,8 @@ class _$InviteRepository extends InviteRepository {
                   'userId': item.userId,
                   'userFirstName': item.userFirstName,
                   'userLastName': item.userLastName,
-                  'userAvatar': item.userAvatar
+                  'userAvatar': item.userAvatar,
+                  'seen': item.seen == null ? null : (item.seen ? 1 : 0)
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -141,7 +142,14 @@ class _$InviteRepository extends InviteRepository {
             userId: row['userId'] as int,
             userFirstName: row['userFirstName'] as String,
             userLastName: row['userLastName'] as String,
-            userAvatar: row['userAvatar'] as String));
+            userAvatar: row['userAvatar'] as String,
+            seen: row['seen'] == null ? null : (row['seen'] as int) != 0));
+  }
+
+  @override
+  Future<void> markSeenBy(int inviteId) async {
+    await _queryAdapter.queryNoReturn('UPDATE INVITE set seen = 1 WHERE id = ?',
+        arguments: <dynamic>[inviteId]);
   }
 
   @override

@@ -59,9 +59,16 @@ class InvitesViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void markAsSeen(int inviteId) async {
+    inviteRepository?.markSeenBy(inviteId);
+    _invites = await inviteRepository!.findAllInvites();
+    notifyListeners();
+  }
+
   void getInvitesFromApi() async {
     try {
       final invites = await invitesRestClient?.getAllInvites();
+      final allSeen = _invites.expand((e) => e.seen! ? [e.id] : []).toSet();
       inviteRepository?.deleteAll();
       invites?.data?.invites?.forEach((inviteResponse) {
         inviteRepository!.insertInvite(
@@ -73,6 +80,7 @@ class InvitesViewModel extends ChangeNotifier {
             userFirstName: inviteResponse.user?.firstName,
             userLastName: inviteResponse.user?.lastName,
             userAvatar: inviteResponse.user?.avatar,
+            seen: allSeen.contains(inviteResponse.id),
           ),
         );
       });

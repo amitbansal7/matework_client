@@ -20,6 +20,9 @@ abstract class InviteRepository {
   @insert
   Future<void> insertInvite(Invite invite);
 
+  @Query("UPDATE INVITE set seen = 1 WHERE id = :inviteId")
+  Future<void> markSeenBy(int inviteId);
+
   @Query("DELETE FROM Invite")
   Future<void> deleteAll();
 

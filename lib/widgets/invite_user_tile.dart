@@ -22,11 +22,17 @@ class InviteUserTile extends StatelessWidget {
               Image.asset("assets/images/avatar_placeholder.png"),
         ),
       ),
-      title: Text(
-        "${invite.userFirstName} ${invite.userLastName}",
-        style: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: MediaQuery.of(context).size.height / 53),
+      title: Row(
+        children: [
+          Text(
+            "${invite.userFirstName} ${invite.userLastName}",
+            style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: MediaQuery.of(context).size.height / 53),
+          ),
+          SizedBox(width: 8),
+          if (!invite.seen!) Icon(Icons.star, color: Colors.blue)
+        ],
       ),
       subtitle: Text(
         invite.message ?? "",
@@ -51,6 +57,8 @@ class InviteUserTile extends StatelessWidget {
         ],
       ),
       onTap: () {
+        Provider.of<InvitesViewModel>(context, listen: false)
+            .markAsSeen(invite.id!);
         Navigator.of(context).pushNamed(UserProfileScreen.routeName);
       },
     );
