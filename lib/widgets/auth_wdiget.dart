@@ -21,7 +21,11 @@ class AuthWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final client = Provider.of<AuthRestClient>(context, listen: false);
+    final dio = Provider.of<Dio>(context, listen: false);
 
+    if (dio.options.headers[MyApp.AUTH] == null) {
+      return LoginScreen();
+    }
     return FutureBuilder<bool>(
       future: checkInternet(),
       builder: (context, isInternet) {
