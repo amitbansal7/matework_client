@@ -23,7 +23,7 @@ class AuthWidget extends StatelessWidget {
     final client = Provider.of<AuthRestClient>(context, listen: false);
     final dio = Provider.of<Dio>(context, listen: false);
 
-    if (dio.options.headers[MyApp.AUTH] == null) {
+    if (dio.options.headers[AUTHORIZATION] == null) {
       return LoginScreen();
     }
     return FutureBuilder<bool>(

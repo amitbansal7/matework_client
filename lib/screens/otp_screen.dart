@@ -13,6 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
+import '../utils.dart';
+
 class OtpScreenWrapper extends StatelessWidget {
   static final routeName = "enter_otp";
   final String phone;
@@ -97,8 +99,9 @@ class _OtpScreenState extends State<OtpScreen> {
                   ),
                   onPressed: () {
                     restClient.verify(widget.phone, _otp).then((res) {
-                      storage.write(key: MyApp.TOKEN, value: res.data.token);
-                      dio.options.headers[MyApp.AUTH] = res.data.token;
+                      storage.write(key: AUTHORIZATION, value: res.data.token);
+                      print(res.data.token);
+                      dio.options.headers[AUTHORIZATION] = res.data.token;
                       Navigator.pop(context);
                       Navigator.pushReplacementNamed(
                           context, HomeScreen.routeName);

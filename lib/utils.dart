@@ -1,5 +1,7 @@
 import 'dart:io';
 
+const BASE_SOCKET_URL = "ws://192.168.1.8:3000/cable";
+const AUTHORIZATION = "Authorization";
 const String BASE_API_URL = "http://192.168.1.8:3000/api";
 const String SOMETHING_WRONG = "Something Went Wrong. Try again after sometime";
 

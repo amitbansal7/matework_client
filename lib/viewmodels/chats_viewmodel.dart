@@ -24,7 +24,6 @@ class ChatsViewModel extends ChangeNotifier {
   }
 
   void getAllChatUsers() async {
-    print("EHRE");
     _chatUsers = await chatsRepository!.findChatUsers();
     notifyListeners();
     getChatUsersFromApi();

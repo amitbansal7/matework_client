@@ -8,7 +8,9 @@ import 'package:Matework/screens/login_screen.dart';
 import 'package:Matework/screens/otp_screen.dart';
 import 'package:Matework/screens/user_chat_screen.dart';
 import 'package:Matework/screens/user_profile_screen.dart';
+import 'package:Matework/utils.dart';
 import 'package:Matework/widgets/slide_left_route.dart';
+import 'package:action_cable/action_cable.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
@@ -21,12 +23,10 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  static final AUTH = "Authorization";
-  static final TOKEN = "token";
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
-      future: FlutterSecureStorage().read(key: MyApp.TOKEN),
+      future: FlutterSecureStorage().read(key: AUTHORIZATION),
       builder: (context, token) {
         if (token.connectionState == ConnectionState.done) {
           return MultiProvider(
@@ -34,8 +34,21 @@ class MyApp extends StatelessWidget {
               Provider<Dio>(
                 create: (context) {
                   final dio = Dio();
-                  dio.options.headers[MyApp.AUTH] = token.data;
+                  dio.options.headers[AUTHORIZATION] = token.data;
                   return dio;
+                },
+              ),
+              ProxyProvider<Dio, ActionCable>(
+                update: (_, dio, __) {
+                  return ActionCable.Connect(BASE_SOCKET_URL, headers: {
+                    AUTHORIZATION: dio.options.headers[AUTHORIZATION],
+                  }, onConnected: () {
+                    print("connected");
+                  }, onConnectionLost: () {
+                    print("connection lost");
+                  }, onCannotConnect: () {
+                    print("cannot connect");
+                  });
                 },
               ),
               Provider.value(value: Logger()),
