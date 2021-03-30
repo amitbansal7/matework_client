@@ -10,7 +10,6 @@ import 'package:Matework/screens/user_chat_screen.dart';
 import 'package:Matework/screens/user_profile_screen.dart';
 import 'package:Matework/utils.dart';
 import 'package:Matework/widgets/slide_left_route.dart';
-import 'package:action_cable/action_cable.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
