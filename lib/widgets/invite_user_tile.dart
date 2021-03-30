@@ -80,6 +80,7 @@ class InviteUserTile extends StatelessWidget {
   void _deleteInvite(Invite invite, BuildContext context) async {
     final viewModel = Provider.of<InvitesViewModel>(context, listen: false);
     final response = await viewModel.deleteInvite(invite.id!);
+    print(response);
     ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
       message: response.item2,
       error: !response.item1,

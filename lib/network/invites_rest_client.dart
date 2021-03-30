@@ -10,7 +10,7 @@ import './response/auth_response.dart';
 import './response/api_response.dart';
 part 'invites_rest_client.g.dart';
 
-@RestApi(baseUrl: "${BASE_API_URL}/v1/invites")
+@RestApi(baseUrl: "$BASE_API_URL/v1/invites")
 abstract class InvitesRestClient {
   factory InvitesRestClient(Dio dio, {String baseUrl}) = _InvitesRestClient;
   @GET("/")

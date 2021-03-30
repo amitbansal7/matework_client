@@ -45,10 +45,13 @@ class InvitesViewModel extends ChangeNotifier {
 
   Future<Tuple2<bool, String>> deleteInvite(int inviteId) async {
     try {
+      print("here");
       final response = await invitesRestClient!.deleteInvite(inviteId);
+      print("RESP $response");
       deleteInviteAndNotify(inviteId);
       return new Tuple2(true, response.message);
     } on DioError catch (e) {
+      print(e.message);
       return new Tuple2(false, e.response?.data["message"] ?? SOMETHING_WRONG);
     }
   }

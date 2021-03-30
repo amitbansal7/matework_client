@@ -2,6 +2,8 @@
 
 import 'package:Matework/network/auth_rest_client.dart';
 import 'package:Matework/network/response/api_response.dart';
+import 'package:Matework/repositories/chats_repository.dart';
+import 'package:Matework/repositories/invites_repository.dart';
 import 'package:Matework/screens/auth_screen.dart';
 import 'package:Matework/screens/home_screen.dart';
 import 'package:Matework/screens/login_screen.dart';
@@ -9,6 +11,8 @@ import 'package:Matework/screens/otp_screen.dart';
 import 'package:Matework/screens/user_chat_screen.dart';
 import 'package:Matework/screens/user_profile_screen.dart';
 import 'package:Matework/utils.dart';
+import 'package:Matework/viewmodels/chats_viewmodel.dart';
+import 'package:Matework/viewmodels/invites_viewmodel.dart';
 import 'package:Matework/widgets/slide_left_route.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -16,6 +20,10 @@ import 'package:provider/provider.dart';
 import './network/response/auth_response.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'database.dart';
+import 'network/chats_rest_client.dart';
+import 'network/invites_rest_client.dart';
 
 void main() {
   runApp(MyApp());
@@ -37,31 +45,36 @@ class MyApp extends StatelessWidget {
                   return dio;
                 },
               ),
-              // ProxyProvider<Dio, ActionCable>(
-              //   update: (_, dio, __) {
-              //     return ActionCable.Connect(BASE_SOCKET_URL, headers: {
-              //       AUTHORIZATION: dio.options.headers[AUTHORIZATION],
-              //     }, onConnected: () {
-              //       print("connected");
-              //     }, onConnectionLost: () {
-              //       print("connection lost");
-              //     }, onCannotConnect: () {
-              //       print("cannot connect");
-              //     });
-              //   },
-              // ),
+              ProxyProvider<Dio, ChatsRestClient>(
+                update: (_, dio, __) {
+                  return ChatsRestClient(dio);
+                },
+              ),
+              FutureProvider<AppDatabase>.value(
+                value: $FloorAppDatabase
+                    .databaseBuilder('app_database.db')
+                    .build(),
+                initialData: null,
+              ),
+              ProxyProvider<AppDatabase, ChatsRepository>(
+                update: (_, db, __) {
+                  return db.chatsRepository;
+                },
+              ),
+              ChangeNotifierProxyProvider2<ChatsRepository, ChatsRestClient,
+                  ChatsViewModel>(
+                create: (_) => ChatsViewModel(),
+                update: (_, chatsRepository, chatsRestClient, viewModel) {
+                  viewModel.setChatsRepository = chatsRepository;
+                  viewModel.setChatsRestClient = chatsRestClient;
+                  return viewModel;
+                },
+              ),
               Provider.value(value: Logger()),
               Provider.value(value: FlutterSecureStorage()),
             ],
             child: MaterialApp(
-              title: 'Flutter Demo',
-              // routes: {
-              //   LoginScreen.routeName: (context) => LoginScreen(),
-              //   HomeScreen.routeName: (context) => HomeScreen(),
-              //   OtpScreenWrapper.routeName: (context) => OtpScreenWrapper(),
-              //   UserProfileScreen.routeName: (context) => UserProfileScreen(),
-              //   // DetailScreen.routeName: (context) => DetailScreen(),
-              // },
+              title: 'Matework',
               onGenerateRoute: (settings) {
                 final arguments = settings.arguments as Map<String, dynamic>;
                 if (settings.name == LoginScreen.routeName) {

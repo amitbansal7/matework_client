@@ -1,6 +1,6 @@
 import 'package:Matework/main.dart';
 import 'package:Matework/network/auth_rest_client.dart';
-import 'package:Matework/widgets/auth_wdiget.dart';
+import 'package:Matework/widgets/auth_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
