@@ -38,19 +38,19 @@ class MyApp extends StatelessWidget {
                   return dio;
                 },
               ),
-              ProxyProvider<Dio, ActionCable>(
-                update: (_, dio, __) {
-                  return ActionCable.Connect(BASE_SOCKET_URL, headers: {
-                    AUTHORIZATION: dio.options.headers[AUTHORIZATION],
-                  }, onConnected: () {
-                    print("connected");
-                  }, onConnectionLost: () {
-                    print("connection lost");
-                  }, onCannotConnect: () {
-                    print("cannot connect");
-                  });
-                },
-              ),
+              // ProxyProvider<Dio, ActionCable>(
+              //   update: (_, dio, __) {
+              //     return ActionCable.Connect(BASE_SOCKET_URL, headers: {
+              //       AUTHORIZATION: dio.options.headers[AUTHORIZATION],
+              //     }, onConnected: () {
+              //       print("connected");
+              //     }, onConnectionLost: () {
+              //       print("connection lost");
+              //     }, onCannotConnect: () {
+              //       print("cannot connect");
+              //     });
+              //   },
+              // ),
               Provider.value(value: Logger()),
               Provider.value(value: FlutterSecureStorage()),
             ],

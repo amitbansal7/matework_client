@@ -47,7 +47,10 @@ class ChatUserTile extends StatelessWidget {
         "Hey whats up?",
         style: TextStyle(fontWeight: FontWeight.w400),
       ),
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, UserChatScreen.routeName,
+            arguments: {"userId": chatUser.id});
+      },
     );
   }
 }

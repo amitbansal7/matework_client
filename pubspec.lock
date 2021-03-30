@@ -8,13 +8,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "14.0.0"
-  action_cable:
-    dependency: "direct main"
-    description:
-      name: action_cable
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
   analyzer:
     dependency: transitive
     description:
@@ -737,6 +730,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.0"
+  websocket_manager:
+    dependency: "direct main"
+    description:
+      name: websocket_manager
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.2"
   win32:
     dependency: transitive
     description:
