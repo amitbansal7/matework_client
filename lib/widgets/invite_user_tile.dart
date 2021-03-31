@@ -1,5 +1,5 @@
 import 'package:Matework/models/invite.dart';
-import 'package:Matework/screens/user_chat_screen.dart';
+import 'package:Matework/screens/user_chat_screen_wrapper.dart';
 import 'package:Matework/screens/user_profile_screen.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
 import 'package:Matework/widgets/my_snackbar.dart';
@@ -68,7 +68,7 @@ class InviteUserTile extends StatelessWidget {
     final viewModel = Provider.of<InvitesViewModel>(context, listen: false);
     final response = await viewModel.acceptInvite(invite.id!);
     if (response.item1) {
-      Navigator.pushNamed(context, UserChatScreen.routeName,
+      Navigator.pushNamed(context, UserChatScreenWrapper.routeName,
           arguments: {"userId": invite.userId!});
     }
     ScaffoldMessenger.of(context).showSnackBar(MySnackBar(

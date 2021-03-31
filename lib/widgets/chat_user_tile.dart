@@ -1,6 +1,6 @@
 import 'package:Matework/models/chat_user.dart';
 import 'package:Matework/models/invite.dart';
-import 'package:Matework/screens/user_chat_screen.dart';
+import 'package:Matework/screens/user_chat_screen_wrapper.dart';
 import 'package:Matework/screens/user_profile_screen.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
 import 'package:Matework/widgets/my_snackbar.dart';
@@ -48,7 +48,7 @@ class ChatUserTile extends StatelessWidget {
         style: TextStyle(fontWeight: FontWeight.w400),
       ),
       onTap: () {
-        Navigator.pushNamed(context, UserChatScreen.routeName,
+        Navigator.pushNamed(context, UserChatScreenWrapper.routeName,
             arguments: {"userId": chatUser.id});
       },
     );

@@ -34,6 +34,7 @@ dependencies:
   cached_network_image: ^2.5.1
   timeago: ^3.0.2
   websocket_manager: ^0.2.2
+  bubble: ^1.2.1
 
 
 

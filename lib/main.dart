@@ -8,7 +8,7 @@ import 'package:Matework/screens/auth_screen.dart';
 import 'package:Matework/screens/home_screen.dart';
 import 'package:Matework/screens/login_screen.dart';
 import 'package:Matework/screens/otp_screen.dart';
-import 'package:Matework/screens/user_chat_screen.dart';
+import 'package:Matework/screens/user_chat_screen_wrapper.dart';
 import 'package:Matework/screens/user_profile_screen.dart';
 import 'package:Matework/utils.dart';
 import 'package:Matework/viewmodels/chats_viewmodel.dart';
@@ -45,29 +45,20 @@ class MyApp extends StatelessWidget {
                   return dio;
                 },
               ),
-              ProxyProvider<Dio, ChatsRestClient>(
-                update: (_, dio, __) {
-                  return ChatsRestClient(dio);
-                },
-              ),
               FutureProvider<AppDatabase>.value(
                 value: $FloorAppDatabase
                     .databaseBuilder('app_database.db')
                     .build(),
                 initialData: null,
               ),
+              ProxyProvider<Dio, ChatsRestClient>(
+                update: (_, dio, __) {
+                  return ChatsRestClient(dio);
+                },
+              ),
               ProxyProvider<AppDatabase, ChatsRepository>(
                 update: (_, db, __) {
                   return db.chatsRepository;
-                },
-              ),
-              ChangeNotifierProxyProvider2<ChatsRepository, ChatsRestClient,
-                  ChatsViewModel>(
-                create: (_) => ChatsViewModel(),
-                update: (_, chatsRepository, chatsRestClient, viewModel) {
-                  viewModel.setChatsRepository = chatsRepository;
-                  viewModel.setChatsRestClient = chatsRestClient;
-                  return viewModel;
                 },
               ),
               Provider.value(value: Logger()),
@@ -86,9 +77,9 @@ class MyApp extends StatelessWidget {
                       page: OtpScreenWrapper(phone: arguments["phone"]));
                 } else if (settings.name == UserProfileScreen.routeName) {
                   return SlideLeftRoute(page: UserProfileScreen());
-                } else if (settings.name == UserChatScreen.routeName) {
+                } else if (settings.name == UserChatScreenWrapper.routeName) {
                   return SlideLeftRoute(
-                      page: UserChatScreen(userId: arguments["userId"]));
+                      page: UserChatScreenWrapper(userId: arguments["userId"]));
                 } else {
                   return MaterialPageRoute(builder: (_) => AuthScreen());
                 }
