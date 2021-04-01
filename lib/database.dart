@@ -11,9 +11,11 @@ import 'package:moor/ffi.dart';
 import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 import 'package:path/path.dart' as p;
 
+import 'models/chat_message.dart';
+
 part 'database.g.dart';
 
-@UseMoor(tables: [Invites, ChatUsers])
+@UseMoor(tables: [Invites, ChatUsers, ChatMessages])
 class AppDatabase extends _$AppDatabase {
   AppDatabase()
       : super(LazyDatabase(() async {
@@ -69,5 +71,45 @@ class AppDatabase extends _$AppDatabase {
         batch.insertAll(chatUsers, allChatUsers);
       });
     });
+  }
+
+  Stream<List<ChatMessage>> watchAllMessages() => (select(chatMessages)
+        ..orderBy([
+          (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.asc)
+        ]))
+      .watch();
+
+  Stream<List<ChatMessage>> watchAllMessagesById(int inviteId) {
+    return (select(chatMessages)
+          ..where((tbl) => tbl.inviteId.equals(inviteId))
+          ..orderBy([
+            (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.asc)
+          ]))
+        .watch();
+  }
+
+  Future<ChatMessage> getLastChatMessageByInviteId(int inviteId) {
+    return (select(chatMessages)
+          ..where((tbl) => tbl.inviteId.equals(inviteId))
+          ..orderBy([
+            (t) =>
+                OrderingTerm(expression: t.createdAt, mode: OrderingMode.desc)
+          ])
+          ..limit(1))
+        .getSingle();
+  }
+
+  Future<void> insertChatMessage(ChatMessage chatMessage) {
+    return into(chatMessages).insertOnConflictUpdate(chatMessage);
+  }
+
+  Future<ChatUser> findChatUserById(int id) {
+    return (select(chatUsers)..where((tbl) => tbl.id.equals(id))).getSingle();
+  }
+
+  Future<void> getChatUserUpdatedAtByInviteId(int inviteId, int updatedAt) {
+    return (update(chatUsers)..where((t) => t.inviteId.equals(inviteId))).write(
+      ChatUsersCompanion(updatedAt: Value(updatedAt)),
+    );
   }
 }

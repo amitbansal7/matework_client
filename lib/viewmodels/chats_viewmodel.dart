@@ -12,10 +12,11 @@ class ChatsViewModel extends ChangeNotifier {
 
   set setAppDatabase(AppDatabase db) {
     this.db = db;
+    _chatUsers = db.watchAllChatUsers();
   }
 
-  bool _checkedFromApi = false;
-  bool get checkedFromApi => _checkedFromApi;
+  Stream<List<ChatUser>> _chatUsers;
+  Stream<List<ChatUser>> get getChatUsers => _chatUsers;
 
   set setChatsRestClient(ChatsRestClient chatsRestClient) {
     this.chatsRestClient = chatsRestClient;

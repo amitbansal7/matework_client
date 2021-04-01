@@ -6,16 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
 class ChatViewModel extends ChangeNotifier {
-  AppDatabase? db;
-  ChatsRestClient? chatsRestClient;
-  int? userId;
+  late AppDatabase db;
+  late ChatsRestClient chatsRestClient;
+  late int _chatUserId;
+  late ChatUser chatUser;
 
   set setAppDatabase(AppDatabase db) {
     this.db = db;
   }
 
-  set setUserId(int userId) {
-    this.userId = userId;
+  set chatUserId(int chatUserId) {
+    this._chatUserId = chatUserId;
+    // _getChatUser();
+  }
+
+  Future<ChatUser> getChatUser() async {
+    return db.findChatUserById(_chatUserId);
+    // print(this.chatUser);
   }
 
   set setChatsRestClient(ChatsRestClient chatsRestClient) {

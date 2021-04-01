@@ -16,9 +16,14 @@ class InvitesViewModel extends ChangeNotifier {
   InvitesRestClient invitesRestClient;
   AppDatabase db;
 
+  Stream<List<Invite>> _invites;
+
   set setAppDatabase(AppDatabase db) {
     this.db = db;
+    _invites = db.watchAllInvites();
   }
+
+  Stream<List<Invite>> get getInvites => _invites;
 
   set setInvitesRestClient(InvitesRestClient invitesRestClient) {
     this.invitesRestClient = invitesRestClient;
@@ -30,7 +35,11 @@ class InvitesViewModel extends ChangeNotifier {
       db.deleteInviteById(inviteId);
       return new Tuple2(true, response.message);
     } on DioError catch (e) {
-      return new Tuple2(false, e.response?.data["message"] ?? SOMETHING_WRONG);
+      return new Tuple2(
+          false,
+          (e.response?.data != null
+              ? e.response.data["message"]
+              : SOMETHING_WRONG));
     }
   }
 
@@ -40,8 +49,11 @@ class InvitesViewModel extends ChangeNotifier {
       db.deleteInviteById(inviteId);
       return new Tuple2(true, response.message);
     } on DioError catch (e) {
-      print(e.message);
-      return new Tuple2(false, e.response?.data["message"] ?? SOMETHING_WRONG);
+      return new Tuple2(
+          false,
+          (e.response?.data != null
+              ? e.response.data["message"]
+              : SOMETHING_WRONG));
     }
   }
 

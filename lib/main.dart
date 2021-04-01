@@ -22,6 +22,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'database.dart';
 import 'network/chats_rest_client.dart';
 import 'network/invites_rest_client.dart';
+import 'services/user_data_channel_manager.dart';
 
 void main() {
   runApp(MyApp());
@@ -51,6 +52,11 @@ class MyApp extends StatelessWidget {
                   return ChatsRestClient(dio);
                 },
               ),
+              ProxyProvider<AppDatabase, UserDataChannelManager>(
+                update: (_, db, __) {
+                  return UserDataChannelManager(db: db);
+                },
+              ),
               Provider.value(value: Logger()),
               Provider.value(value: FlutterSecureStorage()),
             ],
@@ -69,7 +75,8 @@ class MyApp extends StatelessWidget {
                   return SlideLeftRoute(page: UserProfileScreen());
                 } else if (settings.name == UserChatScreenWrapper.routeName) {
                   return SlideLeftRoute(
-                      page: UserChatScreenWrapper(userId: arguments["userId"]));
+                      page: UserChatScreenWrapper(
+                          chatUserId: arguments["chatUserId"]));
                 } else {
                   return MaterialPageRoute(builder: (_) => AuthScreen());
                 }

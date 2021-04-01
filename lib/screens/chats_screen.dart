@@ -1,5 +1,6 @@
 import 'package:Matework/database.dart';
 import 'package:Matework/models/chat_user.dart';
+import 'package:Matework/viewmodels/chat_viewmodel.dart';
 import 'package:Matework/viewmodels/chats_viewmodel.dart';
 import 'package:Matework/widgets/chat_user_tile.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final viewModel = Provider.of<ChatsViewModel>(context, listen: false);
     return Column(
       children: [
         Expanded(
@@ -27,17 +28,20 @@ class _ChatsScreenState extends State<ChatsScreen> {
           child: _buildChatsHeading(),
         ),
         StreamBuilder<List<ChatUser>>(
-          stream: db.watchAllChatUsers(),
+          stream: viewModel.getChatUsers,
           builder: (context, snapshot) {
             final invites = snapshot.data;
             if (invites == null) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             } else {
               return Expanded(
-                  flex: 13,
-                  child: (invites.isNotEmpty)
-                      ? _buildChatUsersList(invites)
-                      : Center(child: Text("No Chats")));
+                flex: 13,
+                child: (invites.isNotEmpty)
+                    ? _buildChatUsersList(invites)
+                    : Center(
+                        child: Text("No Chats"),
+                      ),
+              );
             }
           },
         ),

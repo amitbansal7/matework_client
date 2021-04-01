@@ -5,6 +5,7 @@ import 'package:Matework/repositories/chats_repository.dart';
 import 'package:Matework/repositories/invites_repository.dart';
 import 'package:Matework/screens/chats_screen.dart';
 import 'package:Matework/screens/invites_screen.dart';
+import 'package:Matework/services/user_data_channel_manager.dart';
 import 'package:Matework/viewmodels/chats_viewmodel.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // For establishing a socket connection
+    Provider.of<UserDataChannelManager>(context, listen: false);
+
     return MultiProvider(
       providers: [
         ProxyProvider<Dio, InvitesRestClient>(

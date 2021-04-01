@@ -16,6 +16,7 @@ class ChatUserTile extends StatelessWidget {
   ChatUserTile({required this.chatUser});
   @override
   Widget build(BuildContext context) {
+    final db = Provider.of<AppDatabase>(context, listen: false);
     return ListTile(
       leading: ClipOval(
         child: CachedNetworkImage(
@@ -45,13 +46,22 @@ class ChatUserTile extends StatelessWidget {
           ],
         ),
       ),
-      subtitle: Text(
-        "Hey whats up?",
-        style: TextStyle(fontWeight: FontWeight.w400),
+      subtitle: FutureBuilder<ChatMessage>(
+        future: db.getLastChatMessageByInviteId(chatUser.inviteId),
+        builder: (context, lastMessageF) {
+          if (lastMessageF.connectionState == ConnectionState.done) {
+            return Text(
+              lastMessageF.data?.message ?? "",
+              style: TextStyle(fontWeight: FontWeight.w400),
+            );
+          } else {
+            return Text("");
+          }
+        },
       ),
       onTap: () {
         Navigator.pushNamed(context, UserChatScreenWrapper.routeName,
-            arguments: {"userId": chatUser.id});
+            arguments: {"chatUserId": chatUser.id});
       },
     );
   }

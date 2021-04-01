@@ -70,8 +70,8 @@ class InviteUserTile extends StatelessWidget {
     final viewModel = Provider.of<InvitesViewModel>(context, listen: false);
     final response = await viewModel.acceptInvite(invite.id);
     if (response.item1) {
-      Navigator.pushNamed(context, UserChatScreenWrapper.routeName,
-          arguments: {"userId": invite.userId});
+      // Navigator.pushNamed(context, UserChatScreenWrapper.routeName,
+      //     arguments: {"inviteId": invite.id});
     }
     ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
       message: response.item2,

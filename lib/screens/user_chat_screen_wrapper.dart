@@ -1,12 +1,18 @@
+// @dart=2.9
+
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:Matework/database.dart';
 import 'package:Matework/main.dart';
 import 'package:Matework/network/chats_rest_client.dart';
 import 'package:Matework/repositories/chats_repository.dart';
+import 'package:Matework/services/user_data_channel_manager.dart';
 import 'package:Matework/viewmodels/chat_viewmodel.dart';
 import 'package:Matework/viewmodels/chats_viewmodel.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
@@ -17,9 +23,9 @@ import 'package:websocket_manager/websocket_manager.dart';
 
 class UserChatScreenWrapper extends StatelessWidget {
   static final String routeName = "/chat";
-  final int userId;
+  final int chatUserId;
 
-  UserChatScreenWrapper({required this.userId});
+  UserChatScreenWrapper({this.chatUserId});
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +35,9 @@ class UserChatScreenWrapper extends StatelessWidget {
             ChatViewModel>(
           create: (_) => ChatViewModel(),
           update: (_, db, chatsRestClient, viewModel) {
-            viewModel!.setAppDatabase = db;
+            viewModel.setAppDatabase = db;
             viewModel.setChatsRestClient = chatsRestClient;
-            viewModel.userId = userId;
+            viewModel.chatUserId = chatUserId;
             return viewModel;
           },
         )
@@ -42,96 +48,201 @@ class UserChatScreenWrapper extends StatelessWidget {
 }
 
 class UserChatScreen extends StatefulWidget {
+  UserChatScreen();
+
   @override
   _UserChatScreenState createState() => _UserChatScreenState();
 }
 
 class _UserChatScreenState extends State<UserChatScreen> {
-  List<String> messages = [];
-
-  @override
-  void initState() {
-    super.initState();
-    setupCable();
-  }
-
-  void setupCable() async {
-    final token = await FlutterSecureStorage().read(key: AUTHORIZATION);
-    final socket = WebsocketManager(BASE_SOCKET_URL, {
-      AUTHORIZATION: token,
-    });
-    _connectAndSubscribe(socket);
-    socket.onMessage((dynamic message) {
-      final Map<String, dynamic> data = json.decode(message);
-      if (data["type"] == "ping") {
-        return;
-      }
-      print(message);
-      if (data.containsKey("identifier") &&
-          json.decode(data["identifier"])["channel"] == "UserDataChannel" &&
-          data.containsKey("message") &&
-          data["message"]["type"] == "Message") {
-        setState(() {
-          print("Setting");
-          messages.add(data["message"]["message"]);
-        });
-      }
-    });
-
-    socket.onClose((dynamic message) {
-      print("Closeddddddd");
-      _connectAndSubscribe(socket);
-    });
-  }
-
-  void _connectAndSubscribe(WebsocketManager socket) {
-    socket.connect();
-    final data = jsonEncode({
-      "command": 'subscribe',
-      "identifier": jsonEncode({
-        "channel": 'UserDataChannel',
-      }),
-    });
-
-    socket.send(data);
-    print(data);
-  }
-
-  static const styleSomebody = BubbleStyle(
-    color: Colors.black,
-    borderWidth: 3,
-    elevation: 4,
-    margin: BubbleEdges.only(top: 8, right: 50),
-    alignment: Alignment.topLeft,
-  );
-
-  static const styleMe = BubbleStyle(
-    color: Colors.white,
-    borderWidth: 3,
-    elevation: 4,
-    margin: BubbleEdges.only(top: 8, left: 50),
-    alignment: Alignment.topRight,
-  );
-
   @override
   Widget build(BuildContext context) {
     final chatViewModel = Provider.of<ChatViewModel>(context, listen: false);
-    messages.add("Hey, Im ${chatViewModel.userId.toString()}");
+
+    return FutureBuilder<ChatUser>(
+      future: chatViewModel.getChatUser(),
+      builder: (context, chatUserFuture) {
+        if (chatUserFuture.connectionState == ConnectionState.done) {
+          return _createScaffold(context, chatUserFuture.data);
+        } else {
+          return Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _createScaffold(BuildContext context, ChatUser chatUser) {
+    final db = Provider.of<AppDatabase>(context, listen: false);
+    final messageController = TextEditingController();
+
+    final socketManager =
+        Provider.of<UserDataChannelManager>(context, listen: false);
+    ScrollController _scrollController = new ScrollController();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
+
     return Scaffold(
-      body: Center(
-        child: ListView.builder(
-          itemCount: messages.length,
-          padding: EdgeInsets.only(top: 50, left: 8, bottom: 8, right: 8),
-          itemBuilder: (ctx, index) {
-            return Bubble(
-              style: (index % 2 == 0) ? styleSomebody : styleMe,
-              child: Text(
-                messages[index],
-                style: TextStyle(
-                    color: (index % 2 == 0) ? Colors.white : Colors.black),
+      appBar: _buildChatDetailPageAppBar(chatUser),
+      body: Stack(
+        children: <Widget>[
+          SingleChildScrollView(
+            padding: EdgeInsets.only(bottom: 70),
+            child: StreamBuilder<List<ChatMessage>>(
+              stream: db.watchAllMessagesById(chatUser.inviteId),
+              builder: (context, snapshot) {
+                final messages = snapshot.data;
+                if (messages == null) {
+                  return CircularProgressIndicator();
+                }
+                return ListView.builder(
+                  controller: _scrollController,
+                  shrinkWrap: true,
+                  itemCount: messages.length,
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                  // physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return _buildChatBubble(messages[index], chatUser);
+                  },
+                );
+              },
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Container(
+              padding: EdgeInsets.only(left: 16, bottom: 10),
+              height: 80,
+              width: double.infinity,
+              color: Colors.white,
+              child: Row(
+                children: <Widget>[
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: TextField(
+                      controller: messageController,
+                      decoration: InputDecoration(
+                        hintText: "Type message...",
+                        hintStyle: TextStyle(color: Colors.grey.shade500),
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              padding: EdgeInsets.only(right: 30, bottom: 15),
+              child: FloatingActionButton(
+                onPressed: () {
+                  final text = messageController.text.trim();
+                  if (text.isNotEmpty) {
+                    socketManager.sendMessage(
+                      chatUser.inviteId,
+                      messageController.text.toString(),
+                    );
+                    messageController.clear();
+                    Timer(
+                      Duration(seconds: 1),
+                      () => _scrollController.animateTo(
+                        _scrollController.position.maxScrollExtent,
+                        curve: Curves.easeOut,
+                        duration: const Duration(milliseconds: 300),
+                      ),
+                    );
+                  }
+                },
+                child: Icon(
+                  Icons.send,
+                  color: Colors.white,
+                ),
+                backgroundColor: Colors.pink,
+                elevation: 0,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  PreferredSizeWidget _buildChatDetailPageAppBar(ChatUser chatUser) {
+    return AppBar(
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      backgroundColor: Colors.white,
+      flexibleSpace: SafeArea(
+        child: Container(
+          padding: EdgeInsets.only(right: 16),
+          child: Row(
+            children: <Widget>[
+              IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(Icons.arrow_back, color: Colors.black)),
+              SizedBox(width: 2),
+              CircleAvatar(
+                maxRadius: 20,
+                child: CachedNetworkImage(
+                  imageUrl: chatUser.avatar ?? "",
+                  placeholder: (context, url) =>
+                      Image.asset("assets/images/avatar_placeholder.png"),
+                  errorWidget: (context, url, error) =>
+                      Image.asset("assets/images/avatar_placeholder.png"),
+                ),
+              ),
+              // CircleAvatar(
+              //     backgroundImage: AssetImage("images/userImage1.jpeg"),
+              //     maxRadius: 20),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "${chatUser.firstName} ${chatUser.lastName}",
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(height: 6),
+                    Text(
+                      "Online",
+                      style: TextStyle(color: Colors.green, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.more_vert, color: Colors.grey.shade700),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatBubble(ChatMessage message, ChatUser chatUser) {
+    return Container(
+      padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+      child: Align(
+        alignment: (message.senderId == chatUser.id
+            ? Alignment.topLeft
+            : Alignment.topRight),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: (message.senderId == chatUser.id
+                ? Colors.white
+                : Colors.grey.shade200),
+          ),
+          padding: EdgeInsets.all(16),
+          child: Text(message.message),
         ),
       ),
     );

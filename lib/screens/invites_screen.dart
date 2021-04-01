@@ -23,7 +23,7 @@ class _InvitesState extends State<InvitesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<AppDatabase>(context, listen: false);
+    final viewModel = Provider.of<InvitesViewModel>(context, listen: false);
     return Column(
       children: [
         Expanded(
@@ -31,17 +31,20 @@ class _InvitesState extends State<InvitesScreen> {
           child: _buildInvitesHeading(),
         ),
         StreamBuilder<List<Invite>>(
-          stream: db.watchAllInvites(),
+          stream: viewModel.getInvites,
           builder: (context, snapshot) {
             final invites = snapshot.data;
             if (invites == null) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             } else {
               return Expanded(
-                  flex: 13,
-                  child: (invites.isNotEmpty)
-                      ? _buildInvitesList(invites)
-                      : Center(child: Text("No Invites")));
+                flex: 13,
+                child: (invites.isNotEmpty)
+                    ? _buildInvitesList(invites)
+                    : Center(
+                        child: Text("No Invites"),
+                      ),
+              );
             }
           },
         ),
