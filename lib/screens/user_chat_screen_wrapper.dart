@@ -1,7 +1,6 @@
-// @dart=2.9
-
 import 'dart:convert';
 
+import 'package:Matework/database.dart';
 import 'package:Matework/main.dart';
 import 'package:Matework/network/chats_rest_client.dart';
 import 'package:Matework/repositories/chats_repository.dart';
@@ -20,17 +19,17 @@ class UserChatScreenWrapper extends StatelessWidget {
   static final String routeName = "/chat";
   final int userId;
 
-  UserChatScreenWrapper({this.userId});
+  UserChatScreenWrapper({required this.userId});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProxyProvider2<ChatsRepository, ChatsRestClient,
+        ChangeNotifierProxyProvider2<AppDatabase, ChatsRestClient,
             ChatViewModel>(
           create: (_) => ChatViewModel(),
-          update: (_, chatsRepository, chatsRestClient, viewModel) {
-            viewModel.setChatsRepository = chatsRepository;
+          update: (_, db, chatsRestClient, viewModel) {
+            viewModel!.setAppDatabase = db;
             viewModel.setChatsRestClient = chatsRestClient;
             viewModel.userId = userId;
             return viewModel;

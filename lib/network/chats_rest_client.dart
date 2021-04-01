@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:Matework/models/invite.dart';
 import 'package:Matework/network/response/api_response.dart';
 import 'package:Matework/network/response/chats_response.dart';

@@ -1,13 +1,10 @@
-import 'package:Matework/models/user.dart';
+import 'package:Matework/network/response/user_response.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:floor/floor.dart';
 
 part 'invite_response.g.dart';
 
-@entity
 @JsonSerializable()
 class InviteResponse {
-  @primaryKey
   @JsonKey(name: 'id')
   final int? id;
 
@@ -18,7 +15,7 @@ class InviteResponse {
   final int? createdAt;
 
   @JsonKey(name: 'user')
-  final User? user;
+  final UserResponse? user;
 
   InviteResponse({this.id, this.message, this.createdAt, this.user});
 

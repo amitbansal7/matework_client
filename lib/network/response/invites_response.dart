@@ -1,7 +1,4 @@
-// @dart=2.9
-
 import 'package:Matework/models/invite.dart';
-import 'package:Matework/models/user.dart';
 import 'package:Matework/network/response/invite_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -11,7 +8,7 @@ part 'invites_response.g.dart';
 class InvitesResponse {
   final List<InviteResponse> invites;
 
-  InvitesResponse({this.invites});
+  InvitesResponse({required this.invites});
 
   factory InvitesResponse.fromJson(Map<String, dynamic> json) =>
       _$InvitesResponseFromJson(json);

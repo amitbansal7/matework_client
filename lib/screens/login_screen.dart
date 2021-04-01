@@ -133,8 +133,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   message: SOMETHING_WRONG,
                   error: true,
                 ).getSnackbar());
-                logger
-                    .e("Got error : ${res.statusCode} -> ${res.statusMessage}");
+                logger.e(
+                    "Got error : ${res!.statusCode} -> ${res.statusMessage}");
                 break;
               default:
             }

@@ -8,12 +8,12 @@ part of 'invite_response.dart';
 
 InviteResponse _$InviteResponseFromJson(Map<String, dynamic> json) {
   return InviteResponse(
-    id: json['id'] as int,
-    message: json['message'] as String,
-    createdAt: json['created_at'] as int,
+    id: json['id'] as int?,
+    message: json['message'] as String?,
+    createdAt: json['created_at'] as int?,
     user: json['user'] == null
         ? null
-        : User.fromJson(json['user'] as Map<String, dynamic>),
+        : UserResponse.fromJson(json['user'] as Map<String, dynamic>),
   );
 }
 

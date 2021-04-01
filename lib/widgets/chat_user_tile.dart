@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../database.dart';
+
 class ChatUserTile extends StatelessWidget {
   final ChatUser chatUser;
   ChatUserTile({required this.chatUser});
@@ -37,7 +39,7 @@ class ChatUserTile extends StatelessWidget {
             ),
             Text(
               timeago.format(new DateTime.fromMillisecondsSinceEpoch(
-                  chatUser.updatedAt! * 1000)),
+                  chatUser.updatedAt * 1000)),
               style: TextStyle(fontSize: 13),
             )
           ],

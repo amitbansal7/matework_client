@@ -1,44 +1,46 @@
-import 'package:Matework/models/chat_user.dart';
+// @dart=2.9
+
 import 'package:Matework/network/chats_rest_client.dart';
-import 'package:Matework/repositories/chats_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
+import '../database.dart';
+
 class ChatsViewModel extends ChangeNotifier {
-  ChatsRepository? chatsRepository;
-  ChatsRestClient? chatsRestClient;
-  List<ChatUser> _chatUsers = [];
+  ChatsRestClient chatsRestClient;
+  AppDatabase db;
+
+  set setAppDatabase(AppDatabase db) {
+    this.db = db;
+  }
 
   bool _checkedFromApi = false;
-
   bool get checkedFromApi => _checkedFromApi;
-
-  List<ChatUser> get chatUsers => _chatUsers;
-
-  set setChatsRepository(ChatsRepository repository) {
-    this.chatsRepository = repository;
-  }
 
   set setChatsRestClient(ChatsRestClient chatsRestClient) {
     this.chatsRestClient = chatsRestClient;
   }
 
-  void getAllChatUsers() async {
-    _chatUsers = await chatsRepository!.findChatUsers();
-    notifyListeners();
-    getChatUsersFromApi();
-  }
-
   void getChatUsersFromApi() async {
     try {
-      final chatUsers = await chatsRestClient?.getAllChatUsers();
-      chatsRepository?.deleteAllChatUsers();
-      chatUsers?.data?.chats?.forEach((chatUser) {
-        chatsRepository!.insertChatUser(chatUser);
-      });
-      _chatUsers = await chatsRepository!.findChatUsers();
-    } on DioError catch (e) {}
-    _checkedFromApi = true;
-    notifyListeners();
+      final apiResponse = await chatsRestClient?.getAllChatUsers();
+      final chatsResponse = apiResponse.data.chats;
+      final chats = chatsResponse.map((e) {
+        return ChatUser(
+          id: e.id,
+          updatedAt: e.updatedAt,
+          firstName: e.firstName,
+          lastName: e.lastName,
+          avatar: e.avatar,
+          inviteId: e.inviteId,
+        );
+      }).toList();
+
+      if (chats != null) {
+        db?.deleteAllAndinsertChatUsers(chats);
+      }
+    } on DioError catch (e) {
+      print(e.message);
+    }
   }
 }

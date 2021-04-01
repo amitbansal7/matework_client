@@ -7,6 +7,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../database.dart';
+
 class InviteUserTile extends StatelessWidget {
   final Invite invite;
   InviteUserTile({required this.invite});
@@ -31,7 +33,7 @@ class InviteUserTile extends StatelessWidget {
                 fontSize: MediaQuery.of(context).size.height / 53),
           ),
           SizedBox(width: 8),
-          if (!invite.seen!) Icon(Icons.star, color: Colors.blue)
+          if (!invite.seen) Icon(Icons.star, color: Colors.blue)
         ],
       ),
       subtitle: Text(
@@ -58,7 +60,7 @@ class InviteUserTile extends StatelessWidget {
       ),
       onTap: () {
         Provider.of<InvitesViewModel>(context, listen: false)
-            .markAsSeen(invite.id!);
+            .markAsSeen(invite.id);
         Navigator.of(context).pushNamed(UserProfileScreen.routeName);
       },
     );
@@ -66,10 +68,10 @@ class InviteUserTile extends StatelessWidget {
 
   void _acceptInvite(Invite invite, BuildContext context) async {
     final viewModel = Provider.of<InvitesViewModel>(context, listen: false);
-    final response = await viewModel.acceptInvite(invite.id!);
+    final response = await viewModel.acceptInvite(invite.id);
     if (response.item1) {
       Navigator.pushNamed(context, UserChatScreenWrapper.routeName,
-          arguments: {"userId": invite.userId!});
+          arguments: {"userId": invite.userId});
     }
     ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
       message: response.item2,
@@ -79,8 +81,7 @@ class InviteUserTile extends StatelessWidget {
 
   void _deleteInvite(Invite invite, BuildContext context) async {
     final viewModel = Provider.of<InvitesViewModel>(context, listen: false);
-    final response = await viewModel.deleteInvite(invite.id!);
-    print(response);
+    final response = await viewModel.deleteInvite(invite.id);
     ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
       message: response.item2,
       error: !response.item1,

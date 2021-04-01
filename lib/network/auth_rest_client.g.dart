@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart=2.9
 
 part of 'auth_rest_client.dart';
 
@@ -9,58 +8,46 @@ part of 'auth_rest_client.dart';
 
 class _AuthRestClient implements AuthRestClient {
   _AuthRestClient(this._dio, {this.baseUrl}) {
-    ArgumentError.checkNotNull(_dio, '_dio');
     baseUrl ??= 'http://192.168.1.7:3000/api/v1/';
   }
 
   final Dio _dio;
 
-  String baseUrl;
+  String? baseUrl;
 
   @override
   Future<ApiResponse<AuthResponse>> sendOtp(phoneNumber) async {
-    ArgumentError.checkNotNull(phoneNumber, 'phoneNumber');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = {'phone_number': phoneNumber};
-    _data.removeWhere((k, v) => v == null);
-    final _result = await _dio.request<Map<String, dynamic>>('o/users/login',
-        queryParameters: queryParameters,
-        options: RequestOptions(
-            method: 'POST',
-            headers: <String, dynamic>{},
-            extra: _extra,
-            contentType: 'application/x-www-form-urlencoded',
-            baseUrl: baseUrl),
-        data: _data);
-    final value = ApiResponse<AuthResponse>.fromJson(
-      _result.data,
-      (json) => AuthResponse.fromJson(json),
-    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<AuthResponse>>(Options(
+                method: 'POST',
+                headers: <String, dynamic>{},
+                extra: _extra,
+                contentType: 'application/x-www-form-urlencoded')
+            .compose(_dio.options, 'o/users/login',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ApiResponse<AuthResponse>.fromJson(_result.data!);
     return value;
   }
 
   @override
   Future<ApiResponse<AuthResponse>> verify(phoneNumber, otp) async {
-    ArgumentError.checkNotNull(phoneNumber, 'phoneNumber');
-    ArgumentError.checkNotNull(otp, 'otp');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = {'phone_number': phoneNumber, 'otp': otp};
-    _data.removeWhere((k, v) => v == null);
-    final _result = await _dio.request<Map<String, dynamic>>('o/users/verify',
-        queryParameters: queryParameters,
-        options: RequestOptions(
-            method: 'POST',
-            headers: <String, dynamic>{},
-            extra: _extra,
-            contentType: 'application/x-www-form-urlencoded',
-            baseUrl: baseUrl),
-        data: _data);
-    final value = ApiResponse<AuthResponse>.fromJson(
-      _result.data,
-      (json) => AuthResponse.fromJson(json),
-    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<AuthResponse>>(Options(
+                method: 'POST',
+                headers: <String, dynamic>{},
+                extra: _extra,
+                contentType: 'application/x-www-form-urlencoded')
+            .compose(_dio.options, 'o/users/verify',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ApiResponse<AuthResponse>.fromJson(_result.data!);
     return value;
   }
 
@@ -69,19 +56,29 @@ class _AuthRestClient implements AuthRestClient {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    final _result = await _dio.request<Map<String, dynamic>>('users/auth',
-        queryParameters: queryParameters,
-        options: RequestOptions(
-            method: 'GET',
-            headers: <String, dynamic>{},
-            extra: _extra,
-            contentType: 'application/x-www-form-urlencoded',
-            baseUrl: baseUrl),
-        data: _data);
-    final value = ApiResponse<AuthResponse>.fromJson(
-      _result.data,
-      (json) => AuthResponse.fromJson(json),
-    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<AuthResponse>>(Options(
+                method: 'GET',
+                headers: <String, dynamic>{},
+                extra: _extra,
+                contentType: 'application/x-www-form-urlencoded')
+            .compose(_dio.options, 'users/auth',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ApiResponse<AuthResponse>.fromJson(_result.data!);
     return value;
+  }
+
+  RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
+    if (T != dynamic &&
+        !(requestOptions.responseType == ResponseType.bytes ||
+            requestOptions.responseType == ResponseType.stream)) {
+      if (T == String) {
+        requestOptions.responseType = ResponseType.plain;
+      } else {
+        requestOptions.responseType = ResponseType.json;
+      }
+    }
+    return requestOptions;
   }
 }

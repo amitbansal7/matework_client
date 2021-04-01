@@ -18,28 +18,32 @@ class InvitesScreen extends StatefulWidget {
 class _InvitesState extends State<InvitesScreen> {
   void initState() {
     super.initState();
-    Provider.of<InvitesViewModel>(context, listen: false).getAllInvites();
+    Provider.of<InvitesViewModel>(context, listen: false).getInvitesFromApi();
   }
 
   @override
   Widget build(BuildContext context) {
-    final invitesViewModel = Provider.of<InvitesViewModel>(context);
-
+    final db = Provider.of<AppDatabase>(context, listen: false);
     return Column(
       children: [
         Expanded(
           flex: 2,
           child: _buildInvitesHeading(),
         ),
-        Expanded(
-          flex: 13,
-          child: (invitesViewModel.invites.isNotEmpty)
-              ? _buildInvitesList(invitesViewModel.invites)
-              : invitesViewModel.checkedFromApi
-                  ? Center(child: const Text("No Invites"))
-                  : Center(
-                      child: CircularProgressIndicator(),
-                    ),
+        StreamBuilder<List<Invite>>(
+          stream: db.watchAllInvites(),
+          builder: (context, snapshot) {
+            final invites = snapshot.data;
+            if (invites == null) {
+              return CircularProgressIndicator();
+            } else {
+              return Expanded(
+                  flex: 13,
+                  child: (invites.isNotEmpty)
+                      ? _buildInvitesList(invites)
+                      : Center(child: Text("No Invites")));
+            }
+          },
         ),
       ],
     );

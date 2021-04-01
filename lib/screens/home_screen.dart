@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:Matework/database.dart';
 import 'package:Matework/network/chats_rest_client.dart';
 import 'package:Matework/network/invites_rest_client.dart';
@@ -47,7 +45,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final client = Provider.of<AuthRestClient>(context, listen: false);
     return MultiProvider(
       providers: [
         ProxyProvider<Dio, InvitesRestClient>(
@@ -55,26 +52,22 @@ class _HomeScreenState extends State<HomeScreen> {
             return InvitesRestClient(dio);
           },
         ),
-        ProxyProvider<AppDatabase, InviteRepository>(
-          update: (_, db, __) {
-            return db.inviteRepository;
-          },
-        ),
-        ChangeNotifierProxyProvider2<InviteRepository, InvitesRestClient,
+        ChangeNotifierProxyProvider2<AppDatabase, InvitesRestClient,
             InvitesViewModel>(
           create: (_) => InvitesViewModel(),
-          update: (_, inviteRepository, invitesRestClient, viewModel) {
-            viewModel.setInviteRepository = inviteRepository;
-            viewModel.setInvitesRestClient = invitesRestClient;
-            return viewModel;
+          update: (_, appDatabase, invitesRestClient, viewModel) {
+            // viewModel.setInviteRepository = inviteRepository;
+            viewModel?.setAppDatabase = appDatabase;
+            viewModel?.setInvitesRestClient = invitesRestClient;
+            return viewModel!;
           },
         ),
-        ChangeNotifierProxyProvider2<ChatsRepository, ChatsRestClient,
+        ChangeNotifierProxyProvider2<AppDatabase, ChatsRestClient,
             ChatsViewModel>(
           create: (_) => ChatsViewModel(),
-          update: (_, chatsRepository, chatsRestClient, viewModel) {
-            viewModel.setChatsRepository = chatsRepository;
-            viewModel.setChatsRestClient = chatsRestClient;
+          update: (_, db, chatsRestClient, viewModel) {
+            viewModel!.chatsRestClient = chatsRestClient;
+            viewModel.setAppDatabase = db;
             return viewModel;
           },
         ),

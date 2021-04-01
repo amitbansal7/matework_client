@@ -1,3 +1,4 @@
+import 'package:Matework/database.dart';
 import 'package:Matework/models/chat_user.dart';
 import 'package:Matework/viewmodels/chats_viewmodel.dart';
 import 'package:Matework/widgets/chat_user_tile.dart';
@@ -12,28 +13,33 @@ class ChatsScreen extends StatefulWidget {
 class _ChatsScreenState extends State<ChatsScreen> {
   @override
   void initState() {
-    Provider.of<ChatsViewModel>(context, listen: false).getAllChatUsers();
+    Provider.of<ChatsViewModel>(context, listen: false).getChatUsersFromApi();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final chatsViewModel = Provider.of<ChatsViewModel>(context, listen: true);
+    final db = Provider.of<AppDatabase>(context, listen: false);
     return Column(
       children: [
         Expanded(
           flex: 2,
           child: _buildChatsHeading(),
         ),
-        Expanded(
-          flex: 13,
-          child: (chatsViewModel.chatUsers.isNotEmpty)
-              ? _buildInvitesList(chatsViewModel.chatUsers)
-              : chatsViewModel.checkedFromApi
-                  ? Center(child: const Text("No Connections"))
-                  : Center(
-                      child: CircularProgressIndicator(),
-                    ),
+        StreamBuilder<List<ChatUser>>(
+          stream: db.watchAllChatUsers(),
+          builder: (context, snapshot) {
+            final invites = snapshot.data;
+            if (invites == null) {
+              return CircularProgressIndicator();
+            } else {
+              return Expanded(
+                  flex: 13,
+                  child: (invites.isNotEmpty)
+                      ? _buildChatUsersList(invites)
+                      : Center(child: Text("No Chats")));
+            }
+          },
         ),
       ],
     );
@@ -54,7 +60,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
     );
   }
 
-  Widget _buildInvitesList(List<ChatUser> chatUsers) {
+  Widget _buildChatUsersList(List<ChatUser> chatUsers) {
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
       separatorBuilder: (context, index) {

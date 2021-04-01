@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:Matework/network/auth_rest_client.dart';
 import 'package:Matework/network/response/api_response.dart';
 import 'package:Matework/repositories/chats_repository.dart';
@@ -38,6 +36,9 @@ class MyApp extends StatelessWidget {
         if (token.connectionState == ConnectionState.done) {
           return MultiProvider(
             providers: [
+              Provider<AppDatabase>(create: (_) {
+                return AppDatabase();
+              }),
               Provider<Dio>(
                 create: (context) {
                   final dio = Dio();
@@ -45,20 +46,9 @@ class MyApp extends StatelessWidget {
                   return dio;
                 },
               ),
-              FutureProvider<AppDatabase>.value(
-                value: $FloorAppDatabase
-                    .databaseBuilder('app_database.db')
-                    .build(),
-                initialData: null,
-              ),
               ProxyProvider<Dio, ChatsRestClient>(
                 update: (_, dio, __) {
                   return ChatsRestClient(dio);
-                },
-              ),
-              ProxyProvider<AppDatabase, ChatsRepository>(
-                update: (_, db, __) {
-                  return db.chatsRepository;
                 },
               ),
               Provider.value(value: Logger()),

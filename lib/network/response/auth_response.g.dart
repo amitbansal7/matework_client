@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart=2.9
 
 part of 'auth_response.dart';
 
@@ -9,9 +8,7 @@ part of 'auth_response.dart';
 
 AuthResponse _$AuthResponseFromJson(Map<String, dynamic> json) {
   return AuthResponse(
-    user: json['user'] == null
-        ? null
-        : User.fromJson(json['user'] as Map<String, dynamic>),
+    user: UserResponse.fromJson(json['user'] as Map<String, dynamic>),
     token: json['token'] as String,
   );
 }

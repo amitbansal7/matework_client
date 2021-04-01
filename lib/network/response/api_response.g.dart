@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart=2.9
 
 part of 'api_response.dart';
 
@@ -11,7 +10,7 @@ ApiResponse<T> _$ApiResponseFromJson<T>(Map<String, dynamic> json) {
   return ApiResponse<T>(
     success: json['success'] as bool,
     message: json['message'] as String,
-    data: _Converter<T>().fromJson(json['data']),
+    data: _Converter<T>().fromJson(json['data'] as Object),
   );
 }
 

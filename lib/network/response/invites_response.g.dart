@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart=2.9
 
 part of 'invites_response.dart';
 
@@ -9,11 +8,9 @@ part of 'invites_response.dart';
 
 InvitesResponse _$InvitesResponseFromJson(Map<String, dynamic> json) {
   return InvitesResponse(
-    invites: (json['invites'] as List)
-        ?.map((e) => e == null
-            ? null
-            : InviteResponse.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+    invites: (json['invites'] as List<dynamic>)
+        .map((e) => InviteResponse.fromJson(e as Map<String, dynamic>))
+        .toList(),
   );
 }
 

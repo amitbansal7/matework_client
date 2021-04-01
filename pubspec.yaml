@@ -25,18 +25,20 @@ dependencies:
     sdk: flutter
   provider: ^5.0.0
   retrofit: any
-  json_annotation: 3.1.1
+  json_annotation: ^4.0.0
   flutter_secure_storage: any
   logger: any
   country_code_picker: any
   sms_autofill: ^1.3.1
-  floor: 0.19.1
+  # floor: 0.19.1
   cached_network_image: ^2.5.1
   timeago: ^3.0.2
   websocket_manager: ^0.2.2
   bubble: ^1.2.1
-
-
+  moor: ^4.2.1
+  sqlite3_flutter_libs: ^0.4.1
+  path_provider: ^2.0.1
+  path: ^1.8.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -47,8 +49,8 @@ dev_dependencies:
     sdk: flutter
   retrofit_generator: any
   build_runner: any
-  json_serializable: 3.5.1
-  floor_generator: 0.19.1	
+  moor_generator: ^4.2.1
+  json_serializable: ^4.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

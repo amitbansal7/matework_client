@@ -1,16 +1,14 @@
-// @dart=2.9
-
-import 'package:Matework/models/user.dart';
+import 'package:Matework/network/response/user_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'auth_response.g.dart';
 
 @JsonSerializable()
 class AuthResponse {
-  final User user;
+  final UserResponse user;
   final String token;
 
-  AuthResponse({this.user, this.token});
+  AuthResponse({required this.user, required this.token});
 
   factory AuthResponse.fromJson(Map<String, dynamic> json) =>
       _$AuthResponseFromJson(json);

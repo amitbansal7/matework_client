@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:convert';
 
 import 'package:Matework/main.dart';
@@ -19,7 +17,7 @@ class OtpScreenWrapper extends StatelessWidget {
   static final routeName = "enter_otp";
   final String phone;
 
-  OtpScreenWrapper({this.phone});
+  OtpScreenWrapper({required this.phone});
   @override
   Widget build(BuildContext context) {
     return Scaffold(body: OtpScreen(phone: phone));
@@ -29,7 +27,7 @@ class OtpScreenWrapper extends StatelessWidget {
 class OtpScreen extends StatefulWidget {
   final String phone;
 
-  OtpScreen({this.phone});
+  OtpScreen({required this.phone});
   @override
   _OtpScreenState createState() => _OtpScreenState();
 }
@@ -110,7 +108,7 @@ class _OtpScreenState extends State<OtpScreen> {
                         case DioError:
                           final res = (obj as DioError).response;
                           ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
-                                  message: res.data["message"], error: true)
+                                  message: res!.data["message"], error: true)
                               .getSnackbar());
 
                           logger.e(

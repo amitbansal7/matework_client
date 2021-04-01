@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:Matework/network/response/chats_response.dart';
 import 'package:Matework/network/response/invites_response.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -14,10 +12,10 @@ class ApiResponse<T> {
   @_Converter()
   final T data;
 
-  ApiResponse({this.success, this.message, this.data});
+  ApiResponse(
+      {required this.success, required this.message, required this.data});
 
-  factory ApiResponse.fromJson(
-          Map<String, dynamic> json, T Function(Map<String, dynamic>) name) =>
+  factory ApiResponse.fromJson(Map<String, dynamic> json) =>
       _$ApiResponseFromJson(json);
   Map<String, dynamic> toJson() => _$ApiResponseToJson(this);
 }
@@ -46,6 +44,6 @@ class _Converter<T> implements JsonConverter<T, Object> {
 
   @override
   Object toJson(T object) {
-    return object;
+    return T as Object;
   }
 }

@@ -1,3 +1,5 @@
+// @dart=2.9
+
 import 'dart:collection';
 
 import 'package:Matework/models/invite.dart';
@@ -8,36 +10,25 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:tuple/tuple.dart';
 
+import '../database.dart';
+
 class InvitesViewModel extends ChangeNotifier {
-  InviteRepository? inviteRepository;
-  InvitesRestClient? invitesRestClient;
-  List<Invite> _invites = [];
+  InvitesRestClient invitesRestClient;
+  AppDatabase db;
 
-  bool _checkedFromApi = false;
-
-  bool get checkedFromApi => _checkedFromApi;
-
-  List<Invite> get invites => _invites;
-
-  set setInviteRepository(InviteRepository repository) {
-    this.inviteRepository = repository;
+  set setAppDatabase(AppDatabase db) {
+    this.db = db;
   }
 
   set setInvitesRestClient(InvitesRestClient invitesRestClient) {
     this.invitesRestClient = invitesRestClient;
   }
 
-  void getAllInvites() async {
-    _invites = await inviteRepository!.findAllInvites();
-    notifyListeners();
-    getInvitesFromApi();
-  }
-
   Future<Tuple2<bool, String>> acceptInvite(int inviteId) async {
     try {
       final response = await invitesRestClient?.acceptInvite(inviteId);
-      deleteInviteAndNotify(inviteId);
-      return new Tuple2(true, response!.message);
+      db.deleteInviteById(inviteId);
+      return new Tuple2(true, response.message);
     } on DioError catch (e) {
       return new Tuple2(false, e.response?.data["message"] ?? SOMETHING_WRONG);
     }
@@ -45,10 +36,8 @@ class InvitesViewModel extends ChangeNotifier {
 
   Future<Tuple2<bool, String>> deleteInvite(int inviteId) async {
     try {
-      print("here");
-      final response = await invitesRestClient!.deleteInvite(inviteId);
-      print("RESP $response");
-      deleteInviteAndNotify(inviteId);
+      final response = await invitesRestClient.deleteInvite(inviteId);
+      db.deleteInviteById(inviteId);
       return new Tuple2(true, response.message);
     } on DioError catch (e) {
       print(e.message);
@@ -56,41 +45,33 @@ class InvitesViewModel extends ChangeNotifier {
     }
   }
 
-  void deleteInviteAndNotify(int inviteId) async {
-    _invites.removeWhere((invite) => invite.id == inviteId);
-    await inviteRepository?.deleteById(inviteId);
-    notifyListeners();
-  }
-
   void markAsSeen(int inviteId) async {
-    inviteRepository?.markSeenBy(inviteId);
-    _invites = await inviteRepository!.findAllInvites();
-    notifyListeners();
+    db.markInviteAsSeen(inviteId);
   }
 
   void getInvitesFromApi() async {
     try {
-      final invites = await invitesRestClient?.getAllInvites();
-      final allSeen = _invites.expand((e) => e.seen! ? [e.id] : []).toSet();
-      inviteRepository?.deleteAll();
-      invites?.data?.invites?.forEach((inviteResponse) {
-        inviteRepository!.insertInvite(
-          Invite(
-            id: inviteResponse.id,
-            message: inviteResponse.message,
-            createdAt: inviteResponse.createdAt,
-            userId: inviteResponse.user?.id,
-            userFirstName: inviteResponse.user?.firstName,
-            userLastName: inviteResponse.user?.lastName,
-            userAvatar: inviteResponse.user?.avatar,
-            seen: allSeen.contains(inviteResponse.id),
-          ),
+      final apiResponse = await invitesRestClient?.getAllInvites();
+      final dbInvites = await db.getAllInvites();
+      final allSeen = dbInvites.expand((e) => e.seen ? [e.id] : []).toSet();
+
+      final inviteResponse = apiResponse?.data?.invites;
+      final invites = inviteResponse?.map((e) {
+        return Invite(
+          id: e.id,
+          message: e.message,
+          createdAt: e.createdAt,
+          seen: allSeen.contains(e.id),
+          userAvatar: e.user?.avatar,
+          userFirstName: e.user?.firstName,
+          userLastName: e.user?.lastName,
+          userId: e.user?.id,
         );
       });
-
-      _invites = await inviteRepository!.findAllInvites();
-    } on DioError catch (e) {}
-    _checkedFromApi = true;
-    notifyListeners();
+      print(invites);
+      db.deleteAllAndinsertInvites(invites.toList());
+    } on DioError catch (e) {
+      print(e.message);
+    }
   }
 }
