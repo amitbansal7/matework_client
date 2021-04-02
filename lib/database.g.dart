@@ -846,17 +846,21 @@ class $ChatUsersTable extends ChatUsers
 
 class ChatMessage extends DataClass implements Insertable<ChatMessage> {
   final int id;
+  final int? serverId;
   final int inviteId;
   final int senderId;
   final String message;
   final bool sent;
+  final bool seen;
   final int createdAt;
   ChatMessage(
       {required this.id,
+      this.serverId,
       required this.inviteId,
       required this.senderId,
       required this.message,
       required this.sent,
+      required this.seen,
       required this.createdAt});
   factory ChatMessage.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
@@ -866,6 +870,8 @@ class ChatMessage extends DataClass implements Insertable<ChatMessage> {
     final boolType = db.typeSystem.forDartType<bool>();
     return ChatMessage(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      serverId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}server_id']),
       inviteId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}invite_id'])!,
       senderId:
@@ -873,6 +879,7 @@ class ChatMessage extends DataClass implements Insertable<ChatMessage> {
       message: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}message'])!,
       sent: boolType.mapFromDatabaseResponse(data['${effectivePrefix}sent'])!,
+      seen: boolType.mapFromDatabaseResponse(data['${effectivePrefix}seen'])!,
       createdAt: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at'])!,
     );
@@ -881,10 +888,14 @@ class ChatMessage extends DataClass implements Insertable<ChatMessage> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    if (!nullToAbsent || serverId != null) {
+      map['server_id'] = Variable<int?>(serverId);
+    }
     map['invite_id'] = Variable<int>(inviteId);
     map['sender_id'] = Variable<int>(senderId);
     map['message'] = Variable<String>(message);
     map['sent'] = Variable<bool>(sent);
+    map['seen'] = Variable<bool>(seen);
     map['created_at'] = Variable<int>(createdAt);
     return map;
   }
@@ -892,10 +903,14 @@ class ChatMessage extends DataClass implements Insertable<ChatMessage> {
   ChatMessagesCompanion toCompanion(bool nullToAbsent) {
     return ChatMessagesCompanion(
       id: Value(id),
+      serverId: serverId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(serverId),
       inviteId: Value(inviteId),
       senderId: Value(senderId),
       message: Value(message),
       sent: Value(sent),
+      seen: Value(seen),
       createdAt: Value(createdAt),
     );
   }
@@ -905,10 +920,12 @@ class ChatMessage extends DataClass implements Insertable<ChatMessage> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return ChatMessage(
       id: serializer.fromJson<int>(json['id']),
+      serverId: serializer.fromJson<int?>(json['serverId']),
       inviteId: serializer.fromJson<int>(json['inviteId']),
       senderId: serializer.fromJson<int>(json['senderId']),
       message: serializer.fromJson<String>(json['message']),
       sent: serializer.fromJson<bool>(json['sent']),
+      seen: serializer.fromJson<bool>(json['seen']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
     );
   }
@@ -917,37 +934,45 @@ class ChatMessage extends DataClass implements Insertable<ChatMessage> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'serverId': serializer.toJson<int?>(serverId),
       'inviteId': serializer.toJson<int>(inviteId),
       'senderId': serializer.toJson<int>(senderId),
       'message': serializer.toJson<String>(message),
       'sent': serializer.toJson<bool>(sent),
+      'seen': serializer.toJson<bool>(seen),
       'createdAt': serializer.toJson<int>(createdAt),
     };
   }
 
   ChatMessage copyWith(
           {int? id,
+          int? serverId,
           int? inviteId,
           int? senderId,
           String? message,
           bool? sent,
+          bool? seen,
           int? createdAt}) =>
       ChatMessage(
         id: id ?? this.id,
+        serverId: serverId ?? this.serverId,
         inviteId: inviteId ?? this.inviteId,
         senderId: senderId ?? this.senderId,
         message: message ?? this.message,
         sent: sent ?? this.sent,
+        seen: seen ?? this.seen,
         createdAt: createdAt ?? this.createdAt,
       );
   @override
   String toString() {
     return (StringBuffer('ChatMessage(')
           ..write('id: $id, ')
+          ..write('serverId: $serverId, ')
           ..write('inviteId: $inviteId, ')
           ..write('senderId: $senderId, ')
           ..write('message: $message, ')
           ..write('sent: $sent, ')
+          ..write('seen: $seen, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -957,81 +982,102 @@ class ChatMessage extends DataClass implements Insertable<ChatMessage> {
   int get hashCode => $mrjf($mrjc(
       id.hashCode,
       $mrjc(
-          inviteId.hashCode,
+          serverId.hashCode,
           $mrjc(
-              senderId.hashCode,
-              $mrjc(message.hashCode,
-                  $mrjc(sent.hashCode, createdAt.hashCode))))));
+              inviteId.hashCode,
+              $mrjc(
+                  senderId.hashCode,
+                  $mrjc(
+                      message.hashCode,
+                      $mrjc(sent.hashCode,
+                          $mrjc(seen.hashCode, createdAt.hashCode))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is ChatMessage &&
           other.id == this.id &&
+          other.serverId == this.serverId &&
           other.inviteId == this.inviteId &&
           other.senderId == this.senderId &&
           other.message == this.message &&
           other.sent == this.sent &&
+          other.seen == this.seen &&
           other.createdAt == this.createdAt);
 }
 
 class ChatMessagesCompanion extends UpdateCompanion<ChatMessage> {
   final Value<int> id;
+  final Value<int?> serverId;
   final Value<int> inviteId;
   final Value<int> senderId;
   final Value<String> message;
   final Value<bool> sent;
+  final Value<bool> seen;
   final Value<int> createdAt;
   const ChatMessagesCompanion({
     this.id = const Value.absent(),
+    this.serverId = const Value.absent(),
     this.inviteId = const Value.absent(),
     this.senderId = const Value.absent(),
     this.message = const Value.absent(),
     this.sent = const Value.absent(),
+    this.seen = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
   ChatMessagesCompanion.insert({
     this.id = const Value.absent(),
+    this.serverId = const Value.absent(),
     required int inviteId,
     required int senderId,
     required String message,
     required bool sent,
+    required bool seen,
     required int createdAt,
   })   : inviteId = Value(inviteId),
         senderId = Value(senderId),
         message = Value(message),
         sent = Value(sent),
+        seen = Value(seen),
         createdAt = Value(createdAt);
   static Insertable<ChatMessage> custom({
     Expression<int>? id,
+    Expression<int?>? serverId,
     Expression<int>? inviteId,
     Expression<int>? senderId,
     Expression<String>? message,
     Expression<bool>? sent,
+    Expression<bool>? seen,
     Expression<int>? createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (serverId != null) 'server_id': serverId,
       if (inviteId != null) 'invite_id': inviteId,
       if (senderId != null) 'sender_id': senderId,
       if (message != null) 'message': message,
       if (sent != null) 'sent': sent,
+      if (seen != null) 'seen': seen,
       if (createdAt != null) 'created_at': createdAt,
     });
   }
 
   ChatMessagesCompanion copyWith(
       {Value<int>? id,
+      Value<int?>? serverId,
       Value<int>? inviteId,
       Value<int>? senderId,
       Value<String>? message,
       Value<bool>? sent,
+      Value<bool>? seen,
       Value<int>? createdAt}) {
     return ChatMessagesCompanion(
       id: id ?? this.id,
+      serverId: serverId ?? this.serverId,
       inviteId: inviteId ?? this.inviteId,
       senderId: senderId ?? this.senderId,
       message: message ?? this.message,
       sent: sent ?? this.sent,
+      seen: seen ?? this.seen,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -1041,6 +1087,9 @@ class ChatMessagesCompanion extends UpdateCompanion<ChatMessage> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (serverId.present) {
+      map['server_id'] = Variable<int?>(serverId.value);
     }
     if (inviteId.present) {
       map['invite_id'] = Variable<int>(inviteId.value);
@@ -1054,6 +1103,9 @@ class ChatMessagesCompanion extends UpdateCompanion<ChatMessage> {
     if (sent.present) {
       map['sent'] = Variable<bool>(sent.value);
     }
+    if (seen.present) {
+      map['seen'] = Variable<bool>(seen.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<int>(createdAt.value);
     }
@@ -1064,10 +1116,12 @@ class ChatMessagesCompanion extends UpdateCompanion<ChatMessage> {
   String toString() {
     return (StringBuffer('ChatMessagesCompanion(')
           ..write('id: $id, ')
+          ..write('serverId: $serverId, ')
           ..write('inviteId: $inviteId, ')
           ..write('senderId: $senderId, ')
           ..write('message: $message, ')
           ..write('sent: $sent, ')
+          ..write('seen: $seen, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
@@ -1083,10 +1137,18 @@ class $ChatMessagesTable extends ChatMessages
   @override
   late final GeneratedIntColumn id = _constructId();
   GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _serverIdMeta = const VerificationMeta('serverId');
+  @override
+  late final GeneratedIntColumn serverId = _constructServerId();
+  GeneratedIntColumn _constructServerId() {
     return GeneratedIntColumn(
-      'id',
+      'server_id',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -1134,6 +1196,17 @@ class $ChatMessagesTable extends ChatMessages
     );
   }
 
+  final VerificationMeta _seenMeta = const VerificationMeta('seen');
+  @override
+  late final GeneratedBoolColumn seen = _constructSeen();
+  GeneratedBoolColumn _constructSeen() {
+    return GeneratedBoolColumn(
+      'seen',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   @override
   late final GeneratedIntColumn createdAt = _constructCreatedAt();
@@ -1147,7 +1220,7 @@ class $ChatMessagesTable extends ChatMessages
 
   @override
   List<GeneratedColumn> get $columns =>
-      [id, inviteId, senderId, message, sent, createdAt];
+      [id, serverId, inviteId, senderId, message, sent, seen, createdAt];
   @override
   $ChatMessagesTable get asDslTable => this;
   @override
@@ -1161,6 +1234,10 @@ class $ChatMessagesTable extends ChatMessages
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('server_id')) {
+      context.handle(_serverIdMeta,
+          serverId.isAcceptableOrUnknown(data['server_id']!, _serverIdMeta));
     }
     if (data.containsKey('invite_id')) {
       context.handle(_inviteIdMeta,
@@ -1185,6 +1262,12 @@ class $ChatMessagesTable extends ChatMessages
           _sentMeta, sent.isAcceptableOrUnknown(data['sent']!, _sentMeta));
     } else if (isInserting) {
       context.missing(_sentMeta);
+    }
+    if (data.containsKey('seen')) {
+      context.handle(
+          _seenMeta, seen.isAcceptableOrUnknown(data['seen']!, _seenMeta));
+    } else if (isInserting) {
+      context.missing(_seenMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,

@@ -20,6 +20,8 @@ class AuthWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final client = Provider.of<AuthRestClient>(context, listen: false);
     final dio = Provider.of<Dio>(context, listen: false);
+    final secureStorage =
+        Provider.of<FlutterSecureStorage>(context, listen: false);
 
     if (dio.options.headers[AUTHORIZATION] == null) {
       return LoginScreen();
@@ -41,6 +43,10 @@ class AuthWidget extends StatelessWidget {
                       return LoginScreen();
                     }
                   } else {
+                    secureStorage.write(
+                        key: My_ID,
+                        value:
+                            authResponse.data?.data.user.id.toString() ?? "");
                     return HomeScreen();
                   }
                 } else {

@@ -100,6 +100,8 @@ class _OtpScreenState extends State<OtpScreen> {
                       storage.write(key: AUTHORIZATION, value: res.data.token);
                       print(res.data.token);
                       dio.options.headers[AUTHORIZATION] = res.data.token;
+                      storage.write(
+                          key: My_ID, value: res.data.user.id.toString());
                       Navigator.pop(context);
                       Navigator.pushReplacementNamed(
                           context, HomeScreen.routeName);

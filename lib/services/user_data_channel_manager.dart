@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:Matework/database.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:moor/moor.dart';
 import 'package:websocket_manager/websocket_manager.dart';
 
 import '../utils.dart';
@@ -9,11 +10,21 @@ import '../utils.dart';
 class UserDataChannelManager {
   final AppDatabase db;
   late WebsocketManager socket;
-  UserDataChannelManager({required this.db}) {
+  final FlutterSecureStorage secureStorage;
+  late int myId;
+
+  UserDataChannelManager({required this.db, required this.secureStorage}) {
+    _init();
     _setupConnection();
+    _sendUnSendMessages();
   }
 
-  void sendMessage(int inviteId, String message) {
+  void _init() async {
+    myId = int.parse(await secureStorage.read(key: My_ID));
+    print("MyIDINUserDataChannelManager -> ${myId}");
+  }
+
+  void sendMessage(ChatMessage message) {
     final data = jsonEncode({
       "command": 'message',
       "identifier": jsonEncode({
@@ -21,8 +32,9 @@ class UserDataChannelManager {
       }),
       "data": jsonEncode({
         "action": "send_message",
-        "message": message,
-        "invite_id": inviteId,
+        "message": message.message,
+        "invite_id": message.inviteId,
+        "message_client_id": message.id,
       }),
     });
 
@@ -34,6 +46,7 @@ class UserDataChannelManager {
     socket = WebsocketManager(BASE_SOCKET_URL, {
       AUTHORIZATION: token,
     });
+    socket.close();
     socket.connect();
     final data = jsonEncode({
       "command": 'subscribe',
@@ -43,35 +56,70 @@ class UserDataChannelManager {
     });
 
     socket.send(data);
-    print(data);
+
     socket.onMessage((dynamic message) {
       final Map<String, dynamic> data = json.decode(message);
       if (data["type"] == "ping") {
         return;
       }
-      print(message);
+
       if (data.containsKey("identifier") &&
           json.decode(data["identifier"])["channel"] == "UserDataChannel" &&
           data.containsKey("message") &&
           data["message"]["type"] == "Message") {
-        print(data["message"]["message"]);
+        print(data);
 
         final messagePacket = data["message"];
 
-        db.getChatUserUpdatedAtByInviteId(messagePacket["invite_id"],
+        db.setChatUserUpdatedAtByInviteId(messagePacket["invite_id"],
             DateTime.now().millisecondsSinceEpoch ~/ 1000);
 
-        db.insertChatMessage(
-          ChatMessage(
-            id: messagePacket["id"],
-            inviteId: messagePacket["invite_id"],
-            senderId: messagePacket["sender_id"],
-            message: messagePacket["message"],
-            sent: true,
-            createdAt: messagePacket["created_at"],
-          ),
-        );
+        if (messagePacket["sender_id"] == myId) {
+          db.markChatMessageAsSend(
+              messagePacket["message_client_id"], messagePacket["id"]);
+        } else {
+          print("Inserting message");
+          db.insertChatMessage(
+            ChatMessagesCompanion(
+              serverId: Value(messagePacket["id"]),
+              inviteId: Value(messagePacket["invite_id"]),
+              senderId: Value(messagePacket["sender_id"]),
+              message: Value(messagePacket["message"]),
+              sent: Value(true),
+              seen: Value(true),
+              createdAt: Value(messagePacket["created_at"]),
+            ),
+          );
+        }
+        if (myId != messagePacket["sender_id"]) {
+          _sendMessageConfirmation(messagePacket["id"]);
+        }
       }
     });
+  }
+
+  void _sendUnSendMessages() {
+    print("_sendUnSendMessages 1");
+    db.watchAllUnSentMessages().listen((messages) {
+      messages.forEach((message) {
+        print("Sending unsend message ");
+        sendMessage(message);
+      });
+    });
+  }
+
+  void _sendMessageConfirmation(int messageId) {
+    final data = jsonEncode({
+      "command": 'message',
+      "identifier": jsonEncode({
+        "channel": 'UserDataChannel',
+      }),
+      "data": jsonEncode({
+        "action": "message_received",
+        "message_id": messageId,
+      }),
+    });
+
+    socket.send(data);
   }
 }

@@ -14,6 +14,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:moor/moor.dart' hide Column;
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 import '../utils.dart';
@@ -76,14 +77,13 @@ class _UserChatScreenState extends State<UserChatScreen> {
   Widget _createScaffold(BuildContext context, ChatUser chatUser) {
     final db = Provider.of<AppDatabase>(context, listen: false);
     final messageController = TextEditingController();
+    int myId;
 
-    final socketManager =
-        Provider.of<UserDataChannelManager>(context, listen: false);
-    ScrollController _scrollController = new ScrollController();
+    // ScrollController _scrollController = new ScrollController();
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-    });
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+    //   _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    // });
 
     return Scaffold(
       appBar: _buildChatDetailPageAppBar(chatUser),
@@ -96,14 +96,13 @@ class _UserChatScreenState extends State<UserChatScreen> {
               builder: (context, snapshot) {
                 final messages = snapshot.data;
                 if (messages == null) {
-                  return CircularProgressIndicator();
+                  return SizedBox.shrink();
                 }
                 return ListView.builder(
-                  controller: _scrollController,
                   shrinkWrap: true,
                   itemCount: messages.length,
                   padding: EdgeInsets.only(top: 10, bottom: 10),
-                  // physics: NeverScrollableScrollPhysics(),
+                  physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return _buildChatBubble(messages[index], chatUser);
                   },
@@ -140,22 +139,26 @@ class _UserChatScreenState extends State<UserChatScreen> {
             child: Container(
               padding: EdgeInsets.only(right: 30, bottom: 15),
               child: FloatingActionButton(
-                onPressed: () {
+                onPressed: () async {
                   final text = messageController.text.trim();
                   if (text.isNotEmpty) {
-                    socketManager.sendMessage(
-                      chatUser.inviteId,
-                      messageController.text.toString(),
-                    );
-                    messageController.clear();
-                    Timer(
-                      Duration(seconds: 1),
-                      () => _scrollController.animateTo(
-                        _scrollController.position.maxScrollExtent,
-                        curve: Curves.easeOut,
-                        duration: const Duration(milliseconds: 300),
+                    if (myId == null) {
+                      myId = Provider.of<UserDataChannelManager>(context,
+                              listen: false)
+                          .myId;
+                    }
+                    db.insertChatMessage(
+                      ChatMessagesCompanion(
+                        message: Value(messageController.text.toString()),
+                        inviteId: Value(chatUser.inviteId),
+                        createdAt: Value(
+                            DateTime.now().millisecondsSinceEpoch ~/ 1000),
+                        senderId: Value(myId),
+                        sent: Value(false),
+                        seen: Value(true),
                       ),
                     );
+                    messageController.clear();
                   }
                 },
                 child: Icon(
@@ -242,9 +245,25 @@ class _UserChatScreenState extends State<UserChatScreen> {
                 : Colors.grey.shade200),
           ),
           padding: EdgeInsets.all(16),
-          child: Text(message.message),
+          child: _buildMessageText(message),
         ),
       ),
+    );
+  }
+}
+
+Widget _buildMessageText(ChatMessage message) {
+  if (message.sent) {
+    return Text(message.message);
+  } else {
+    return Wrap(
+      children: [
+        Text(message.message),
+        Icon(
+          Icons.watch_sharp,
+          size: 15,
+        ),
+      ],
     );
   }
 }

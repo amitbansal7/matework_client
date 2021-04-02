@@ -53,7 +53,7 @@ class AppDatabase extends _$AppDatabase {
     return transaction(() async {
       await delete(invites).go();
       await batch((batch) {
-        batch.insertAll(invites, allInvites);
+        batch.insertAllOnConflictUpdate(invites, allInvites);
       });
     });
   }
@@ -68,7 +68,7 @@ class AppDatabase extends _$AppDatabase {
     return transaction(() async {
       await delete(chatUsers).go();
       await batch((batch) {
-        batch.insertAll(chatUsers, allChatUsers);
+        batch.insertAllOnConflictUpdate(chatUsers, allChatUsers);
       });
     });
   }
@@ -78,6 +78,10 @@ class AppDatabase extends _$AppDatabase {
           (t) => OrderingTerm(expression: t.createdAt, mode: OrderingMode.asc)
         ]))
       .watch();
+
+  Future<void> insertChatMessage(ChatMessagesCompanion chatMessage) {
+    return into(chatMessages).insert(chatMessage);
+  }
 
   Stream<List<ChatMessage>> watchAllMessagesById(int inviteId) {
     return (select(chatMessages)
@@ -99,15 +103,25 @@ class AppDatabase extends _$AppDatabase {
         .getSingle();
   }
 
-  Future<void> insertChatMessage(ChatMessage chatMessage) {
-    return into(chatMessages).insertOnConflictUpdate(chatMessage);
+  Stream<List<ChatMessage>> watchAllUnSentMessages() {
+    return (select(chatMessages)..where((tbl) => tbl.sent.equals(false)))
+        .watch();
+  }
+
+  Future<void> markChatMessageAsSend(int id, int serverId) {
+    return (update(chatMessages)..where((t) => t.id.equals(id))).write(
+      ChatMessagesCompanion(
+        sent: Value(true),
+        serverId: Value(serverId),
+      ),
+    );
   }
 
   Future<ChatUser> findChatUserById(int id) {
     return (select(chatUsers)..where((tbl) => tbl.id.equals(id))).getSingle();
   }
 
-  Future<void> getChatUserUpdatedAtByInviteId(int inviteId, int updatedAt) {
+  Future<void> setChatUserUpdatedAtByInviteId(int inviteId, int updatedAt) {
     return (update(chatUsers)..where((t) => t.inviteId.equals(inviteId))).write(
       ChatUsersCompanion(updatedAt: Value(updatedAt)),
     );

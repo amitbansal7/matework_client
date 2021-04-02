@@ -37,9 +37,8 @@ class MyApp extends StatelessWidget {
         if (token.connectionState == ConnectionState.done) {
           return MultiProvider(
             providers: [
-              Provider<AppDatabase>(create: (_) {
-                return AppDatabase();
-              }),
+              Provider.value(value: AppDatabase()),
+              Provider.value(value: FlutterSecureStorage()),
               Provider<Dio>(
                 create: (context) {
                   final dio = Dio();
@@ -52,13 +51,13 @@ class MyApp extends StatelessWidget {
                   return ChatsRestClient(dio);
                 },
               ),
-              ProxyProvider<AppDatabase, UserDataChannelManager>(
-                update: (_, db, __) {
-                  return UserDataChannelManager(db: db);
+              ProxyProvider2<AppDatabase, FlutterSecureStorage,
+                  UserDataChannelManager>(
+                update: (_, db, storage, __) {
+                  return UserDataChannelManager(db: db, secureStorage: storage);
                 },
               ),
               Provider.value(value: Logger()),
-              Provider.value(value: FlutterSecureStorage()),
             ],
             child: MaterialApp(
               title: 'Matework',
