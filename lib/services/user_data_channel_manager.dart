@@ -86,7 +86,7 @@ class UserDataChannelManager {
               senderId: Value(messagePacket["sender_id"]),
               message: Value(messagePacket["message"]),
               sent: Value(true),
-              seen: Value(true),
+              seen: Value(false),
               createdAt: Value(messagePacket["created_at"]),
             ),
           );

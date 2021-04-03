@@ -117,6 +117,21 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
+  Future<void> markAllChatMessageSeenByInviteId(int inviteId) {
+    return (update(chatMessages)..where((tbl) => tbl.inviteId.equals(inviteId)))
+        .write(ChatMessagesCompanion(seen: Value(true)));
+  }
+
+  Stream<int> countUnseenChatMessageByInviteId(int inviteId) {
+    final expr = countAll(
+        filter: chatMessages.inviteId.equals(inviteId) &
+            chatMessages.seen.equals(false));
+
+    return (selectOnly(chatMessages)..addColumns([expr]))
+        .map((row) => row.read(expr))
+        .watchSingle();
+  }
+
   Future<ChatUser> findChatUserById(int id) {
     return (select(chatUsers)..where((tbl) => tbl.id.equals(id))).getSingle();
   }

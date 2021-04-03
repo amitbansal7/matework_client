@@ -8,6 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:badges/badges.dart';
 
 import '../database.dart';
 
@@ -42,7 +43,7 @@ class ChatUserTile extends StatelessWidget {
               timeago.format(new DateTime.fromMillisecondsSinceEpoch(
                   chatUser.updatedAt * 1000)),
               style: TextStyle(fontSize: 13),
-            )
+            ),
           ],
         ),
       ),
@@ -50,9 +51,40 @@ class ChatUserTile extends StatelessWidget {
         future: db.getLastChatMessageByInviteId(chatUser.inviteId),
         builder: (context, lastMessageF) {
           if (lastMessageF.connectionState == ConnectionState.done) {
-            return Text(
-              lastMessageF.data?.message ?? "",
-              style: TextStyle(fontWeight: FontWeight.w400),
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  lastMessageF.data?.message ?? "",
+                  style: TextStyle(fontWeight: FontWeight.w400),
+                ),
+                StreamBuilder(
+                  stream:
+                      db.countUnseenChatMessageByInviteId(chatUser.inviteId),
+                  builder: (context, unseenCount) {
+                    if (unseenCount.data != null) {
+                      if (unseenCount.data == 0) {
+                        return SizedBox.shrink();
+                      } else {
+                        return Container(
+                          padding: EdgeInsets.only(right: 6),
+                          child: Badge(
+                            animationType: BadgeAnimationType.fade,
+                            shape: BadgeShape.circle,
+                            badgeColor: Colors.green,
+                            borderRadius: BorderRadius.circular(8),
+                            badgeContent: Text('${unseenCount.data}',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 15)),
+                          ),
+                        );
+                      }
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  },
+                ),
+              ],
             );
           } else {
             return Text("");

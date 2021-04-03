@@ -78,7 +78,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
     final db = Provider.of<AppDatabase>(context, listen: false);
     final messageController = TextEditingController();
     int myId;
-
+    db.markAllChatMessageSeenByInviteId(chatUser.inviteId);
     // ScrollController _scrollController = new ScrollController();
 
     // SchedulerBinding.instance.addPostFrameCallback((_) {
