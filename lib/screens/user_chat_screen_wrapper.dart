@@ -238,32 +238,34 @@ class _UserChatScreenState extends State<UserChatScreen> {
             ? Alignment.topLeft
             : Alignment.topRight),
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            color: (message.senderId == chatUser.id
-                ? Colors.white
-                : Colors.grey.shade200),
-          ),
-          padding: EdgeInsets.all(16),
-          child: _buildMessageText(message),
-        ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(30),
+              color: (message.senderId == chatUser.id
+                  ? Colors.white
+                  : Colors.grey.shade200),
+            ),
+            padding: EdgeInsets.all(16),
+            child: _buildMessageText(message, message.senderId != chatUser.id)),
       ),
     );
   }
 }
 
-Widget _buildMessageText(ChatMessage message) {
-  if (message.sent) {
-    return Text(message.message);
-  } else {
-    return Wrap(
-      children: [
-        Text(message.message),
-        Icon(
-          Icons.watch_sharp,
-          size: 15,
-        ),
-      ],
-    );
-  }
+Widget _buildMessageText(ChatMessage message, bool imSender) {
+  return Wrap(
+    children: [
+      Text(message.message),
+      SizedBox(width: 2),
+      imSender
+          ? Container(
+              padding: EdgeInsets.only(top: 2),
+              child: Icon(
+                message.sent ? Icons.check : Icons.timer,
+                size: 12,
+                color: Colors.grey,
+              ),
+            )
+          : SizedBox.shrink()
+    ],
+  );
 }
