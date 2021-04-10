@@ -10,6 +10,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
 import 'package:sms_autofill/sms_autofill.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../utils.dart';
 
@@ -47,23 +48,24 @@ class _OtpScreenState extends State<OtpScreen> {
     return Center(
       child: Container(
         child: Padding(
-          padding: EdgeInsets.all(40),
+          padding: EdgeInsets.all(30.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 "Verify Mobile Number",
-                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 27.sp, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 35.h),
               Text("We have sent an OTP on ${widget.phone}",
-                  style: TextStyle(fontSize: 20)),
-              SizedBox(height: 40),
-              Text("Please check your message", style: TextStyle(fontSize: 20)),
-              SizedBox(height: 40),
+                  style: TextStyle(fontSize: 15.sp)),
+              SizedBox(height: 35.h),
+              Text("Please check your message",
+                  style: TextStyle(fontSize: 15.sp)),
+              SizedBox(height: 35.h),
               PinFieldAutoFill(
                 decoration: UnderlineDecoration(
-                  textStyle: TextStyle(fontSize: 20, color: Colors.black),
+                  textStyle: TextStyle(fontSize: 15.sp, color: Colors.black),
                   colorBuilder:
                       FixedColorBuilder(Colors.black.withOpacity(0.3)),
                 ),
@@ -77,13 +79,13 @@ class _OtpScreenState extends State<OtpScreen> {
                   _otp = code;
                 },
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 35.h),
               Container(
-                width: 170,
-                height: 60,
+                width: 140.w,
+                height: 45.h,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black.withOpacity(0.7)),
-                  borderRadius: BorderRadius.circular(40),
+                  borderRadius: BorderRadius.circular(40.r),
                   color: Colors.black,
                 ),
                 child: TextButton(
@@ -92,7 +94,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
-                      fontSize: 18,
+                      fontSize: 12.sp,
                     ),
                   ),
                   onPressed: () {

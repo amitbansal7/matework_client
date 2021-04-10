@@ -6,7 +6,7 @@ import 'package:Matework/widgets/my_snackbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../database.dart';
 
 class InviteUserTile extends StatelessWidget {
@@ -17,6 +17,7 @@ class InviteUserTile extends StatelessWidget {
     return ListTile(
       leading: ClipOval(
         child: CachedNetworkImage(
+          height: 33.h,
           imageUrl: invite.userAvatar ?? "",
           placeholder: (context, url) =>
               Image.asset("assets/images/avatar_placeholder.png"),
@@ -26,23 +27,23 @@ class InviteUserTile extends StatelessWidget {
       ),
       title: Row(
         children: [
-          Text(
-            "${invite.userFirstName} ${invite.userLastName}",
-            style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: MediaQuery.of(context).size.height / 53),
+          Container(
+            padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
+            child: Text(
+              "${invite.userFirstName} ${invite.userLastName}",
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.sp),
+            ),
           ),
-          SizedBox(width: 8),
+          SizedBox(width: 8.w),
           if (!invite.seen) Icon(Icons.star, color: Colors.blue)
         ],
       ),
       subtitle: Text(
         invite.message ?? "",
-        style: TextStyle(fontWeight: FontWeight.w400),
+        style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12.sp),
       ),
       trailing: Wrap(
-        spacing:
-            MediaQuery.of(context).size.height / 96, // space between two icons
+        spacing: 18.w, // space between two icons
         children: [
           IconButton(
             icon: const Icon(Icons.check_circle_outline, color: Colors.green),

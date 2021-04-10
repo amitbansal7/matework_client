@@ -9,6 +9,7 @@ import 'package:Matework/widgets/invite_user_tile.dart';
 import 'package:Matework/widgets/slide_left_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class InvitesScreen extends StatefulWidget {
   @override
@@ -54,12 +55,12 @@ class _InvitesState extends State<InvitesScreen> {
 
   Widget _buildInvitesHeading() {
     return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 20),
+      padding: EdgeInsets.only(top: 30.h),
       child: Text(
         "Invites",
         style: TextStyle(
           color: Colors.black,
-          fontSize: MediaQuery.of(context).size.height / 20,
+          fontSize: 40.sp,
           fontFamily: "PlayfairDisplay",
           fontWeight: FontWeight.w600,
         ),
@@ -73,8 +74,8 @@ class _InvitesState extends State<InvitesScreen> {
       separatorBuilder: (context, index) {
         return Divider(
           thickness: 0.6,
-          endIndent: MediaQuery.of(context).size.width / 13,
-          indent: MediaQuery.of(context).size.width / 5.5,
+          endIndent: 25.w,
+          indent: 60.w,
         );
       },
       itemCount: invites.length,

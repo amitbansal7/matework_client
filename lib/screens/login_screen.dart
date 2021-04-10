@@ -9,6 +9,7 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoginScreen extends StatefulWidget {
   static final routeName = "login";
@@ -28,28 +29,28 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(16),
-      padding: EdgeInsets.only(bottom: 100),
+      margin: EdgeInsets.all(12.w),
+      padding: EdgeInsets.only(bottom: 70.w),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
             "assets/images/logo.png",
-            width: 150,
+            width: 100.w,
             alignment: Alignment.topRight,
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 7.h),
           Text(
             "Matework",
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 32.sp,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
-          SizedBox(height: 60),
+          SizedBox(height: 40.h),
           _phoneNumberInput(),
-          SizedBox(height: 60),
+          SizedBox(height: 40.h),
           _sendOtpButton(),
         ],
       ),
@@ -59,10 +60,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _phoneNumberInput() {
     return Container(
       width: double.infinity,
-      height: 60.0,
+      height: 40.h,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black.withOpacity(0.7)),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,11 +102,11 @@ class _LoginScreenState extends State<LoginScreen> {
     final authClient = Provider.of<AuthRestClient>(context, listen: false);
     final logger = Provider.of<Logger>(context, listen: false);
     return Container(
-      width: 170,
-      height: 60,
+      width: 130.w,
+      height: 45.h,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.black.withOpacity(0.7)),
-        borderRadius: BorderRadius.circular(40),
+        borderRadius: BorderRadius.circular(30.r),
         color: Colors.black,
       ),
       child: TextButton(
@@ -114,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
-            fontSize: 18,
+            fontSize: 13.sp,
           ),
         ),
         onPressed: () {

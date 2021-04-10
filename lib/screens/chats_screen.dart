@@ -5,6 +5,7 @@ import 'package:Matework/viewmodels/chats_viewmodel.dart';
 import 'package:Matework/widgets/chat_user_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ChatsScreen extends StatefulWidget {
   @override
@@ -51,12 +52,12 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   Widget _buildChatsHeading() {
     return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 20),
+      padding: EdgeInsets.only(top: 30.h),
       child: Text(
         "Connections",
         style: TextStyle(
           color: Colors.black,
-          fontSize: MediaQuery.of(context).size.height / 20,
+          fontSize: 40.sp,
           fontFamily: "PlayfairDisplay",
           fontWeight: FontWeight.w600,
         ),
@@ -70,8 +71,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
       separatorBuilder: (context, index) {
         return Divider(
           thickness: 0.6,
-          endIndent: MediaQuery.of(context).size.width / 13,
-          indent: MediaQuery.of(context).size.width / 5.5,
+          endIndent: 25.w,
+          indent: 60.w,
         );
       },
       itemCount: chatUsers.length,

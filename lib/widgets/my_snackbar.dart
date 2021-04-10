@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MySnackBar {
   final bool error;
@@ -13,7 +14,7 @@ class MySnackBar {
       behavior: SnackBarBehavior.floating,
       duration: Duration(milliseconds: 1000),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(10))),
+          borderRadius: BorderRadius.all(Radius.circular(10.r))),
       backgroundColor: error ? Colors.red : Colors.green,
       // action: SnackBarAction(
       //   label: 'Undo',

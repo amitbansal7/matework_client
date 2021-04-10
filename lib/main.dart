@@ -23,6 +23,7 @@ import 'database.dart';
 import 'network/chats_rest_client.dart';
 import 'network/invites_rest_client.dart';
 import 'services/user_data_channel_manager.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
   runApp(MyApp());
@@ -31,62 +32,66 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
-      future: FlutterSecureStorage().read(key: AUTHORIZATION),
-      builder: (context, token) {
-        if (token.connectionState == ConnectionState.done) {
-          return MultiProvider(
-            providers: [
-              Provider.value(value: AppDatabase()),
-              Provider.value(value: FlutterSecureStorage()),
-              Provider<Dio>(
-                create: (context) {
-                  final dio = Dio();
-                  dio.options.headers[AUTHORIZATION] = token.data;
-                  return dio;
+    return ScreenUtilInit(
+      designSize: Size(360, 690),
+      builder: () => FutureBuilder<String>(
+        future: FlutterSecureStorage().read(key: AUTHORIZATION),
+        builder: (context, token) {
+          if (token.connectionState == ConnectionState.done) {
+            return MultiProvider(
+              providers: [
+                Provider.value(value: AppDatabase()),
+                Provider.value(value: FlutterSecureStorage()),
+                Provider<Dio>(
+                  create: (context) {
+                    final dio = Dio();
+                    dio.options.headers[AUTHORIZATION] = token.data;
+                    return dio;
+                  },
+                ),
+                ProxyProvider<Dio, ChatsRestClient>(
+                  update: (_, dio, __) {
+                    return ChatsRestClient(dio);
+                  },
+                ),
+                ProxyProvider2<AppDatabase, FlutterSecureStorage,
+                    UserDataChannelManager>(
+                  update: (_, db, storage, __) {
+                    return UserDataChannelManager(
+                        db: db, secureStorage: storage);
+                  },
+                ),
+                Provider.value(value: Logger()),
+              ],
+              child: MaterialApp(
+                title: 'Matework',
+                onGenerateRoute: (settings) {
+                  final arguments = settings.arguments as Map<String, dynamic>;
+                  if (settings.name == LoginScreen.routeName) {
+                    return SlideLeftRoute(page: LoginScreen());
+                  } else if (settings.name == HomeScreen.routeName) {
+                    return SlideLeftRoute(page: HomeScreen());
+                  } else if (settings.name == OtpScreenWrapper.routeName) {
+                    return SlideLeftRoute(
+                        page: OtpScreenWrapper(phone: arguments["phone"]));
+                  } else if (settings.name == UserProfileScreen.routeName) {
+                    return SlideLeftRoute(page: UserProfileScreen());
+                  } else if (settings.name == UserChatScreenWrapper.routeName) {
+                    return SlideLeftRoute(
+                        page: UserChatScreenWrapper(
+                            chatUserId: arguments["chatUserId"]));
+                  } else {
+                    return MaterialPageRoute(builder: (_) => AuthScreen());
+                  }
                 },
+                home: AuthScreen(),
               ),
-              ProxyProvider<Dio, ChatsRestClient>(
-                update: (_, dio, __) {
-                  return ChatsRestClient(dio);
-                },
-              ),
-              ProxyProvider2<AppDatabase, FlutterSecureStorage,
-                  UserDataChannelManager>(
-                update: (_, db, storage, __) {
-                  return UserDataChannelManager(db: db, secureStorage: storage);
-                },
-              ),
-              Provider.value(value: Logger()),
-            ],
-            child: MaterialApp(
-              title: 'Matework',
-              onGenerateRoute: (settings) {
-                final arguments = settings.arguments as Map<String, dynamic>;
-                if (settings.name == LoginScreen.routeName) {
-                  return SlideLeftRoute(page: LoginScreen());
-                } else if (settings.name == HomeScreen.routeName) {
-                  return SlideLeftRoute(page: HomeScreen());
-                } else if (settings.name == OtpScreenWrapper.routeName) {
-                  return SlideLeftRoute(
-                      page: OtpScreenWrapper(phone: arguments["phone"]));
-                } else if (settings.name == UserProfileScreen.routeName) {
-                  return SlideLeftRoute(page: UserProfileScreen());
-                } else if (settings.name == UserChatScreenWrapper.routeName) {
-                  return SlideLeftRoute(
-                      page: UserChatScreenWrapper(
-                          chatUserId: arguments["chatUserId"]));
-                } else {
-                  return MaterialPageRoute(builder: (_) => AuthScreen());
-                }
-              },
-              home: AuthScreen(),
-            ),
-          );
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 }

@@ -21,6 +21,7 @@ import '../utils.dart';
 import 'package:bubble/bubble.dart';
 import 'package:bubble/issue_clipper.dart';
 import 'package:websocket_manager/websocket_manager.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UserChatScreenWrapper extends StatelessWidget {
   static final String routeName = "/chat";
@@ -90,7 +91,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
       body: Stack(
         children: <Widget>[
           SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: 70),
+            padding: EdgeInsets.only(bottom: 70.h),
             child: StreamBuilder<List<ChatMessage>>(
               stream: db.watchAllMessagesById(chatUser.inviteId),
               builder: (context, snapshot) {
@@ -101,7 +102,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
                 return ListView.builder(
                   shrinkWrap: true,
                   itemCount: messages.length,
-                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                  padding: EdgeInsets.only(top: 10.h, bottom: 10.h),
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return _buildChatBubble(messages[index], chatUser);
@@ -113,13 +114,13 @@ class _UserChatScreenState extends State<UserChatScreen> {
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
-              padding: EdgeInsets.only(left: 16, bottom: 10),
-              height: 80,
+              padding: EdgeInsets.only(left: 16.w, bottom: 10.h),
+              height: 50.h,
               width: double.infinity,
               color: Colors.white,
               child: Row(
                 children: <Widget>[
-                  SizedBox(width: 16),
+                  SizedBox(width: 14.w),
                   Expanded(
                     child: TextField(
                       controller: messageController,
@@ -137,7 +138,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
           Align(
             alignment: Alignment.bottomRight,
             child: Container(
-              padding: EdgeInsets.only(right: 30, bottom: 15),
+              padding: EdgeInsets.only(right: 15.w, bottom: 7.h),
               child: FloatingActionButton(
                 onPressed: () async {
                   final text = messageController.text.trim();
@@ -163,6 +164,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
                 },
                 child: Icon(
                   Icons.send,
+                  size: 20.sp,
                   color: Colors.white,
                 ),
                 backgroundColor: Colors.pink,
@@ -182,7 +184,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
       backgroundColor: Colors.white,
       flexibleSpace: SafeArea(
         child: Container(
-          padding: EdgeInsets.only(right: 16),
+          padding: EdgeInsets.only(right: 16.w),
           child: Row(
             children: <Widget>[
               IconButton(
@@ -190,10 +192,10 @@ class _UserChatScreenState extends State<UserChatScreen> {
                     Navigator.pop(context);
                   },
                   icon: Icon(Icons.arrow_back, color: Colors.black)),
-              SizedBox(width: 2),
-              CircleAvatar(
-                maxRadius: 20,
+              SizedBox(width: 2.w),
+              ClipOval(
                 child: CachedNetworkImage(
+                  height: 33.h,
                   imageUrl: chatUser.avatar ?? "",
                   placeholder: (context, url) =>
                       Image.asset("assets/images/avatar_placeholder.png"),
@@ -201,24 +203,18 @@ class _UserChatScreenState extends State<UserChatScreen> {
                       Image.asset("assets/images/avatar_placeholder.png"),
                 ),
               ),
-              // CircleAvatar(
-              //     backgroundImage: AssetImage("images/userImage1.jpeg"),
-              //     maxRadius: 20),
-              SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    SizedBox(height: 5.h),
                     Text(
                       "${chatUser.firstName} ${chatUser.lastName}",
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    SizedBox(height: 6),
-                    Text(
-                      "Online",
-                      style: TextStyle(color: Colors.green, fontSize: 12),
-                    ),
+                    SizedBox(height: 5.h)
                   ],
                 ),
               ),
@@ -232,19 +228,19 @@ class _UserChatScreenState extends State<UserChatScreen> {
 
   Widget _buildChatBubble(ChatMessage message, ChatUser chatUser) {
     return Container(
-      padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+      padding: EdgeInsets.only(left: 12.w, right: 12.w, top: 7.h, bottom: 7.h),
       child: Align(
         alignment: (message.senderId == chatUser.id
             ? Alignment.topLeft
             : Alignment.topRight),
         child: Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(25.r),
               color: (message.senderId == chatUser.id
                   ? Colors.white
                   : Colors.grey.shade200),
             ),
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.all(11.h),
             child: _buildMessageText(message, message.senderId != chatUser.id)),
       ),
     );
@@ -255,10 +251,10 @@ Widget _buildMessageText(ChatMessage message, bool imSender) {
   return Wrap(
     children: [
       Text(message.message),
-      SizedBox(width: 2),
+      SizedBox(width: 2.w),
       imSender
           ? Container(
-              padding: EdgeInsets.only(top: 2),
+              padding: EdgeInsets.only(top: 2.h),
               child: Icon(
                 message.sent ? Icons.check : Icons.timer,
                 size: 12,

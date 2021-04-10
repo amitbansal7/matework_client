@@ -11,6 +11,7 @@ import 'package:Matework/viewmodels/invites_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart' hide Headers;
 import 'package:provider/provider.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomeScreen extends StatefulWidget {
   static final routeName = "home";
@@ -28,8 +29,8 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static TextStyle optionStyle =
+      TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold);
 
   static List<Widget> _widgetOptions = <Widget>[
     Text(
@@ -83,8 +84,8 @@ class _HomeScreenState extends State<HomeScreen> {
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-                topRight: const Radius.circular(15),
-                topLeft: const Radius.circular(15)),
+                topRight: Radius.circular(15.r),
+                topLeft: Radius.circular(15.r)),
             boxShadow: [
               const BoxShadow(
                   color: Colors.black26, spreadRadius: 0, blurRadius: 0.1),
@@ -92,13 +93,13 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(15.0),
-              topRight: const Radius.circular(15.0),
+              topLeft: Radius.circular(15.r),
+              topRight: Radius.circular(15.r),
             ),
             child: BottomNavigationBar(
-              elevation: 10,
-              iconSize: 30,
-              selectedFontSize: 12,
+              elevation: 8.sp,
+              iconSize: 23.sp,
+              selectedFontSize: 10.sp,
               selectedIconTheme: IconThemeData(color: Colors.black),
               unselectedIconTheme: IconThemeData(color: Colors.grey),
               items: <BottomNavigationBarItem>[
