@@ -1,18 +1,23 @@
 import 'package:Matework/models/invite.dart';
+import 'package:Matework/screens/chats_screen.dart';
 import 'package:Matework/screens/user_chat_screen_wrapper.dart';
 import 'package:Matework/screens/user_profile_screen.dart';
+import 'package:Matework/services/user_data_channel_manager.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
 import 'package:Matework/widgets/my_snackbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:moor/moor.dart' hide Column;
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:readmore/readmore.dart';
 import '../database.dart';
+import 'dart:ui';
 
 class InviteUserTile extends StatelessWidget {
   final Invite invite;
   InviteUserTile({required this.invite});
+  int? myId;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -76,7 +81,7 @@ class InviteUserTile extends StatelessWidget {
                 )
               ],
             ),
-            SizedBox(height: 15),
+            SizedBox(height: 10),
             Container(
               constraints: BoxConstraints(
                 minHeight: 40.0,
@@ -112,13 +117,13 @@ class InviteUserTile extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 15),
+            SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 TextButton(
                   onPressed: () {
-                    showAlertDialog(context);
+                    _showDeleteAlertDialog(context);
                   },
                   child: Text(
                     "Delete",
@@ -131,7 +136,7 @@ class InviteUserTile extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    _acceptInvite(invite, context);
+                    _showAcceptAlertDialog(invite, context);
                   },
                   child: Text(
                     "Accept",
@@ -150,12 +155,32 @@ class InviteUserTile extends StatelessWidget {
     );
   }
 
-  void _acceptInvite(Invite invite, BuildContext context) async {
+  void _acceptInvite(
+    Invite invite,
+    BuildContext context,
+    String replyText,
+  ) async {
     final viewModel = Provider.of<InvitesViewModel>(context, listen: false);
+    final db = Provider.of<AppDatabase>(context, listen: false);
     final response = await viewModel.acceptInvite(invite.id);
     if (response.item1) {
       // Navigator.pushNamed(context, UserChatScreenWrapper.routeName,
       //     arguments: {"inviteId": invite.id});
+    }
+    if (response.item1) {
+      if (myId == null) {
+        myId = Provider.of<UserDataChannelManager>(context, listen: false).myId;
+      }
+      db.insertChatMessage(
+        ChatMessagesCompanion(
+          message: Value(replyText),
+          inviteId: Value(invite.id),
+          createdAt: Value(DateTime.now().millisecondsSinceEpoch ~/ 1000),
+          senderId: Value(myId!),
+          sent: Value(false),
+          seen: Value(true),
+        ),
+      );
     }
     ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
       message: response.item2,
@@ -172,7 +197,19 @@ class InviteUserTile extends StatelessWidget {
     ).getSnackbar());
   }
 
-  showAlertDialog(BuildContext context) {
+  _showAcceptAlertDialog(Invite invite, BuildContext ogContext) {
+    showDialog(
+      context: ogContext,
+      builder: (BuildContext context) {
+        return AcceptInviteAlertForm(onSend: (String reply) {
+          _acceptInvite(invite, ogContext, reply);
+          Navigator.of(context, rootNavigator: true).pop();
+        });
+      },
+    );
+  }
+
+  _showDeleteAlertDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
       title: Text("Delete Connect Invite"),
       content: Text("Are you sure you want to delete invite?"),
@@ -198,6 +235,68 @@ class InviteUserTile extends StatelessWidget {
       builder: (BuildContext context) {
         return alert;
       },
+    );
+  }
+}
+
+class AcceptInviteAlertForm extends StatefulWidget {
+  Function onSend;
+  AcceptInviteAlertForm({required this.onSend});
+
+  @override
+  _AcceptInviteFormSAlertstate createState() =>
+      _AcceptInviteFormSAlertstate(onSend: this.onSend);
+}
+
+class _AcceptInviteFormSAlertstate extends State<AcceptInviteAlertForm> {
+  Function onSend;
+  _AcceptInviteFormSAlertstate({required this.onSend});
+
+  final iniviteReplyController = TextEditingController();
+  bool _validate = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: AlertDialog(
+        title: Text("Reply and Accept Invite"),
+        content: Container(
+          constraints: BoxConstraints(minHeight: 60.0, minWidth: 300.w),
+          child: TextField(
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            controller: iniviteReplyController,
+            decoration: InputDecoration(
+              errorText: _validate ? "Reply can't be blank" : null,
+              border: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: const Color(0xFFCDCFD2), width: 2.0),
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            child: Text("Cancel"),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop();
+            },
+          ),
+          TextButton(
+            child: Text("Send & Accept"),
+            onPressed: () {
+              if (iniviteReplyController.text.isEmpty) {
+                setState(() {
+                  _validate = true;
+                });
+              } else {
+                onSend(iniviteReplyController.text);
+              }
+            },
+          ),
+        ],
+      ),
     );
   }
 }
