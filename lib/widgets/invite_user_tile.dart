@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:readmore/readmore.dart';
 import '../database.dart';
 
 class InviteUserTile extends StatelessWidget {
@@ -14,56 +15,138 @@ class InviteUserTile extends StatelessWidget {
   InviteUserTile({required this.invite});
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: ClipOval(
-        child: CachedNetworkImage(
-          height: 33.h,
-          imageUrl: invite.userAvatar ?? "",
-          placeholder: (context, url) =>
-              Image.asset("assets/images/avatar_placeholder.png"),
-          errorWidget: (context, url, error) =>
-              Image.asset("assets/images/avatar_placeholder.png"),
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      elevation: 2,
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: ClipOval(
+                    child: CachedNetworkImage(
+                      height: 63.h,
+                      imageUrl: invite.userAvatar ?? "",
+                      placeholder: (context, url) =>
+                          Image.asset("assets/images/avatar_placeholder.png"),
+                      errorWidget: (context, url, error) =>
+                          Image.asset("assets/images/avatar_placeholder.png"),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(10.h),
+                  child: Container(
+                    height: 50,
+                    width: 0.1,
+                    color: Colors.black,
+                  ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "${invite.userFirstName} ${invite.userLastName}",
+                      style: TextStyle(
+                          fontSize: 15.sp, fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.h),
+                      child: Container(
+                        height: 0.1,
+                        width: 150.sp,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      "${invite.userShortBio}",
+                      style: TextStyle(fontSize: 13.sp),
+                    ),
+                  ],
+                )
+              ],
+            ),
+            SizedBox(height: 15),
+            Container(
+              constraints: BoxConstraints(
+                minHeight: 40.0,
+              ),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF2F5F8),
+                border: Border.all(
+                  color: const Color(0xFFCDCFD2),
+                  width: 2.0,
+                ),
+              ),
+              child: Container(
+                padding: EdgeInsets.all(10),
+                child: ReadMoreText(
+                  invite.message ?? "",
+                  trimLines: 2,
+                  style: TextStyle(color: Colors.black),
+                  colorClickableText: Colors.black,
+                  trimMode: TrimMode.Line,
+                  trimCollapsedText: 'Show more',
+                  trimExpandedText: 'Show less',
+                  lessStyle: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  moreStyle: TextStyle(
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 15),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    showAlertDialog(context);
+                  },
+                  child: Text(
+                    "Delete",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    _acceptInvite(invite, context);
+                  },
+                  child: Text(
+                    "Accept",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 13.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
         ),
       ),
-      title: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
-            child: Text(
-              "${invite.userFirstName} ${invite.userLastName}",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.sp),
-            ),
-          ),
-          SizedBox(width: 8.w),
-          if (!invite.seen) Icon(Icons.star, color: Colors.blue)
-        ],
-      ),
-      subtitle: Text(
-        invite.message ?? "",
-        style: TextStyle(fontWeight: FontWeight.w400, fontSize: 12.sp),
-      ),
-      trailing: Wrap(
-        spacing: 18.w, // space between two icons
-        children: [
-          IconButton(
-            icon: const Icon(Icons.check_circle_outline, color: Colors.green),
-            onPressed: () {
-              _acceptInvite(invite, context);
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.cancel_outlined, color: Colors.red),
-            onPressed: () {
-              showAlertDialog(context);
-            },
-          )
-        ],
-      ),
-      onTap: () {
-        Provider.of<InvitesViewModel>(context, listen: false)
-            .markAsSeen(invite.id);
-        Navigator.of(context).pushNamed(UserProfileScreen.routeName);
-      },
     );
   }
 
@@ -91,8 +174,8 @@ class InviteUserTile extends StatelessWidget {
 
   showAlertDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
-      title: Text("Reject Connect Invite"),
-      content: Text("Are you sure you want to reject invite?"),
+      title: Text("Delete Connect Invite"),
+      content: Text("Are you sure you want to delete invite?"),
       actions: [
         TextButton(
           child: Text("No"),

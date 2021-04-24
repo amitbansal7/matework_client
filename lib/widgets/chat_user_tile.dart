@@ -54,10 +54,13 @@ class ChatUserTile extends StatelessWidget {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  lastMessageF.data?.message ?? "",
-                  style:
-                      TextStyle(fontWeight: FontWeight.w400, fontSize: 12.sp),
+                Flexible(
+                  child: Text(
+                    lastMessageF.data?.message ?? "",
+                    overflow: TextOverflow.ellipsis,
+                    style:
+                        TextStyle(fontWeight: FontWeight.w400, fontSize: 12.sp),
+                  ),
                 ),
                 StreamBuilder(
                   stream:

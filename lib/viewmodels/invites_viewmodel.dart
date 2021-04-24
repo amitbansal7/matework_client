@@ -77,6 +77,7 @@ class InvitesViewModel extends ChangeNotifier {
           userAvatar: e.user?.avatar,
           userFirstName: e.user?.firstName,
           userLastName: e.user?.lastName,
+          userShortBio: e.user?.shortBio,
           userId: e.user?.id,
         );
       });

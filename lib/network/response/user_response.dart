@@ -16,6 +16,9 @@ class UserResponse {
   @JsonKey(name: 'avatar')
   final String? avatar;
 
+  @JsonKey(name: 'short_bio')
+  final String? shortBio;
+
   final String? email;
 
   @JsonKey(name: 'phone_number')
@@ -25,6 +28,7 @@ class UserResponse {
       {this.id,
       this.firstName,
       this.lastName,
+      this.shortBio,
       this.email,
       this.phoneNumber,
       this.avatar});

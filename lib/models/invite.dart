@@ -9,6 +9,7 @@ class Invites extends Table {
   TextColumn get userFirstName => text().nullable()();
   TextColumn get userLastName => text().nullable()();
   TextColumn get userAvatar => text().nullable()();
+  TextColumn get userShortBio => text().nullable()();
   BoolColumn get seen => boolean()();
 
   @override

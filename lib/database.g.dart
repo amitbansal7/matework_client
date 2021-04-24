@@ -15,6 +15,7 @@ class Invite extends DataClass implements Insertable<Invite> {
   final String? userFirstName;
   final String? userLastName;
   final String? userAvatar;
+  final String? userShortBio;
   final bool seen;
   Invite(
       {required this.id,
@@ -24,6 +25,7 @@ class Invite extends DataClass implements Insertable<Invite> {
       this.userFirstName,
       this.userLastName,
       this.userAvatar,
+      this.userShortBio,
       required this.seen});
   factory Invite.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
@@ -45,6 +47,8 @@ class Invite extends DataClass implements Insertable<Invite> {
           .mapFromDatabaseResponse(data['${effectivePrefix}user_last_name']),
       userAvatar: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}user_avatar']),
+      userShortBio: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}user_short_bio']),
       seen: boolType.mapFromDatabaseResponse(data['${effectivePrefix}seen'])!,
     );
   }
@@ -68,6 +72,9 @@ class Invite extends DataClass implements Insertable<Invite> {
     if (!nullToAbsent || userAvatar != null) {
       map['user_avatar'] = Variable<String?>(userAvatar);
     }
+    if (!nullToAbsent || userShortBio != null) {
+      map['user_short_bio'] = Variable<String?>(userShortBio);
+    }
     map['seen'] = Variable<bool>(seen);
     return map;
   }
@@ -90,6 +97,9 @@ class Invite extends DataClass implements Insertable<Invite> {
       userAvatar: userAvatar == null && nullToAbsent
           ? const Value.absent()
           : Value(userAvatar),
+      userShortBio: userShortBio == null && nullToAbsent
+          ? const Value.absent()
+          : Value(userShortBio),
       seen: Value(seen),
     );
   }
@@ -105,6 +115,7 @@ class Invite extends DataClass implements Insertable<Invite> {
       userFirstName: serializer.fromJson<String?>(json['userFirstName']),
       userLastName: serializer.fromJson<String?>(json['userLastName']),
       userAvatar: serializer.fromJson<String?>(json['userAvatar']),
+      userShortBio: serializer.fromJson<String?>(json['userShortBio']),
       seen: serializer.fromJson<bool>(json['seen']),
     );
   }
@@ -119,6 +130,7 @@ class Invite extends DataClass implements Insertable<Invite> {
       'userFirstName': serializer.toJson<String?>(userFirstName),
       'userLastName': serializer.toJson<String?>(userLastName),
       'userAvatar': serializer.toJson<String?>(userAvatar),
+      'userShortBio': serializer.toJson<String?>(userShortBio),
       'seen': serializer.toJson<bool>(seen),
     };
   }
@@ -131,6 +143,7 @@ class Invite extends DataClass implements Insertable<Invite> {
           String? userFirstName,
           String? userLastName,
           String? userAvatar,
+          String? userShortBio,
           bool? seen}) =>
       Invite(
         id: id ?? this.id,
@@ -140,6 +153,7 @@ class Invite extends DataClass implements Insertable<Invite> {
         userFirstName: userFirstName ?? this.userFirstName,
         userLastName: userLastName ?? this.userLastName,
         userAvatar: userAvatar ?? this.userAvatar,
+        userShortBio: userShortBio ?? this.userShortBio,
         seen: seen ?? this.seen,
       );
   @override
@@ -152,6 +166,7 @@ class Invite extends DataClass implements Insertable<Invite> {
           ..write('userFirstName: $userFirstName, ')
           ..write('userLastName: $userLastName, ')
           ..write('userAvatar: $userAvatar, ')
+          ..write('userShortBio: $userShortBio, ')
           ..write('seen: $seen')
           ..write(')'))
         .toString();
@@ -168,8 +183,12 @@ class Invite extends DataClass implements Insertable<Invite> {
                   userId.hashCode,
                   $mrjc(
                       userFirstName.hashCode,
-                      $mrjc(userLastName.hashCode,
-                          $mrjc(userAvatar.hashCode, seen.hashCode))))))));
+                      $mrjc(
+                          userLastName.hashCode,
+                          $mrjc(
+                              userAvatar.hashCode,
+                              $mrjc(
+                                  userShortBio.hashCode, seen.hashCode)))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -181,6 +200,7 @@ class Invite extends DataClass implements Insertable<Invite> {
           other.userFirstName == this.userFirstName &&
           other.userLastName == this.userLastName &&
           other.userAvatar == this.userAvatar &&
+          other.userShortBio == this.userShortBio &&
           other.seen == this.seen);
 }
 
@@ -192,6 +212,7 @@ class InvitesCompanion extends UpdateCompanion<Invite> {
   final Value<String?> userFirstName;
   final Value<String?> userLastName;
   final Value<String?> userAvatar;
+  final Value<String?> userShortBio;
   final Value<bool> seen;
   const InvitesCompanion({
     this.id = const Value.absent(),
@@ -201,6 +222,7 @@ class InvitesCompanion extends UpdateCompanion<Invite> {
     this.userFirstName = const Value.absent(),
     this.userLastName = const Value.absent(),
     this.userAvatar = const Value.absent(),
+    this.userShortBio = const Value.absent(),
     this.seen = const Value.absent(),
   });
   InvitesCompanion.insert({
@@ -211,6 +233,7 @@ class InvitesCompanion extends UpdateCompanion<Invite> {
     this.userFirstName = const Value.absent(),
     this.userLastName = const Value.absent(),
     this.userAvatar = const Value.absent(),
+    this.userShortBio = const Value.absent(),
     required bool seen,
   })   : createdAt = Value(createdAt),
         seen = Value(seen);
@@ -222,6 +245,7 @@ class InvitesCompanion extends UpdateCompanion<Invite> {
     Expression<String?>? userFirstName,
     Expression<String?>? userLastName,
     Expression<String?>? userAvatar,
+    Expression<String?>? userShortBio,
     Expression<bool>? seen,
   }) {
     return RawValuesInsertable({
@@ -232,6 +256,7 @@ class InvitesCompanion extends UpdateCompanion<Invite> {
       if (userFirstName != null) 'user_first_name': userFirstName,
       if (userLastName != null) 'user_last_name': userLastName,
       if (userAvatar != null) 'user_avatar': userAvatar,
+      if (userShortBio != null) 'user_short_bio': userShortBio,
       if (seen != null) 'seen': seen,
     });
   }
@@ -244,6 +269,7 @@ class InvitesCompanion extends UpdateCompanion<Invite> {
       Value<String?>? userFirstName,
       Value<String?>? userLastName,
       Value<String?>? userAvatar,
+      Value<String?>? userShortBio,
       Value<bool>? seen}) {
     return InvitesCompanion(
       id: id ?? this.id,
@@ -253,6 +279,7 @@ class InvitesCompanion extends UpdateCompanion<Invite> {
       userFirstName: userFirstName ?? this.userFirstName,
       userLastName: userLastName ?? this.userLastName,
       userAvatar: userAvatar ?? this.userAvatar,
+      userShortBio: userShortBio ?? this.userShortBio,
       seen: seen ?? this.seen,
     );
   }
@@ -281,6 +308,9 @@ class InvitesCompanion extends UpdateCompanion<Invite> {
     if (userAvatar.present) {
       map['user_avatar'] = Variable<String?>(userAvatar.value);
     }
+    if (userShortBio.present) {
+      map['user_short_bio'] = Variable<String?>(userShortBio.value);
+    }
     if (seen.present) {
       map['seen'] = Variable<bool>(seen.value);
     }
@@ -297,6 +327,7 @@ class InvitesCompanion extends UpdateCompanion<Invite> {
           ..write('userFirstName: $userFirstName, ')
           ..write('userLastName: $userLastName, ')
           ..write('userAvatar: $userAvatar, ')
+          ..write('userShortBio: $userShortBio, ')
           ..write('seen: $seen')
           ..write(')'))
         .toString();
@@ -386,6 +417,18 @@ class $InvitesTable extends Invites with TableInfo<$InvitesTable, Invite> {
     );
   }
 
+  final VerificationMeta _userShortBioMeta =
+      const VerificationMeta('userShortBio');
+  @override
+  late final GeneratedTextColumn userShortBio = _constructUserShortBio();
+  GeneratedTextColumn _constructUserShortBio() {
+    return GeneratedTextColumn(
+      'user_short_bio',
+      $tableName,
+      true,
+    );
+  }
+
   final VerificationMeta _seenMeta = const VerificationMeta('seen');
   @override
   late final GeneratedBoolColumn seen = _constructSeen();
@@ -406,6 +449,7 @@ class $InvitesTable extends Invites with TableInfo<$InvitesTable, Invite> {
         userFirstName,
         userLastName,
         userAvatar,
+        userShortBio,
         seen
       ];
   @override
@@ -453,6 +497,12 @@ class $InvitesTable extends Invites with TableInfo<$InvitesTable, Invite> {
           _userAvatarMeta,
           userAvatar.isAcceptableOrUnknown(
               data['user_avatar']!, _userAvatarMeta));
+    }
+    if (data.containsKey('user_short_bio')) {
+      context.handle(
+          _userShortBioMeta,
+          userShortBio.isAcceptableOrUnknown(
+              data['user_short_bio']!, _userShortBioMeta));
     }
     if (data.containsKey('seen')) {
       context.handle(
