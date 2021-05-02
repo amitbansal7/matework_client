@@ -1,6 +1,7 @@
 import 'package:Matework/database.dart';
 import 'package:Matework/network/user_profiles_rest_client.dart';
 import 'package:Matework/viewmodels/user_profile_viewmodel.dart';
+import 'package:Matework/widgets/user_profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,31 +25,8 @@ class UserProfileScreenWrapper extends StatelessWidget {
           },
         )
       ],
-      child: UserProfileScreen(userId: userId),
-    );
-  }
-}
-
-class UserProfileScreen extends StatelessWidget {
-  final int userId;
-
-  UserProfileScreen({required this.userId});
-
-  @override
-  Widget build(BuildContext context) {
-    final userProfileViewModel =
-        Provider.of<UserProfileViewModel>(context, listen: false);
-    return Scaffold(
-      body: StreamBuilder<UserProfile>(
-        stream: userProfileViewModel.getUserProfile(userId),
-        builder: (context, snapshot) {
-          final userProfile = snapshot.data;
-          if (userProfile == null) {
-            return Center(child: CircularProgressIndicator());
-          } else {
-            return Center(child: Text(userProfile.firstName ?? ""));
-          }
-        },
+      child: Scaffold(
+        body: UserProfileWidget(userId: userId),
       ),
     );
   }

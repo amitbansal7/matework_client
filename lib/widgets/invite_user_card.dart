@@ -1,7 +1,7 @@
 import 'package:Matework/models/invite.dart';
 import 'package:Matework/screens/chats_screen.dart';
 import 'package:Matework/screens/user_chat_screen_wrapper.dart';
-import 'package:Matework/screens/user_profile_screen.dart';
+import 'package:Matework/screens/user_profile_wrapper.dart';
 import 'package:Matework/services/user_data_channel_manager.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
 import 'package:Matework/widgets/my_snackbar.dart';

@@ -3,7 +3,7 @@ import 'package:Matework/models/invite.dart';
 import 'package:Matework/network/invites_rest_client.dart';
 import 'package:Matework/network/response/api_response.dart';
 import 'package:Matework/network/response/invites_response.dart';
-import 'package:Matework/screens/user_profile_screen.dart';
+import 'package:Matework/screens/user_profile_wrapper.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
 import 'package:Matework/widgets/invite_user_card.dart';
 import 'package:Matework/widgets/slide_left_route.dart';

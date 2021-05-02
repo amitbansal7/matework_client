@@ -7,7 +7,7 @@ import 'package:Matework/database.dart';
 import 'package:Matework/main.dart';
 import 'package:Matework/network/chats_rest_client.dart';
 import 'package:Matework/repositories/chats_repository.dart';
-import 'package:Matework/screens/user_profile_screen.dart';
+import 'package:Matework/screens/user_profile_wrapper.dart';
 import 'package:Matework/services/user_data_channel_manager.dart';
 import 'package:Matework/viewmodels/chat_viewmodel.dart';
 import 'package:Matework/viewmodels/chats_viewmodel.dart';
