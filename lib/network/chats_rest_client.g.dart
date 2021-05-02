@@ -8,7 +8,7 @@ part of 'chats_rest_client.dart';
 
 class _ChatsRestClient implements ChatsRestClient {
   _ChatsRestClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'http://192.168.1.6:3000/api/v1/chats';
+    baseUrl ??= 'http://192.168.1.9:3000/api/v1/chats';
   }
 
   final Dio _dio;

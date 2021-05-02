@@ -6,6 +6,7 @@ import 'package:Matework/repositories/chats_repository.dart';
 import 'package:Matework/repositories/invites_repository.dart';
 import 'package:Matework/screens/chats_screen.dart';
 import 'package:Matework/screens/invites_screen.dart';
+import 'package:Matework/screens/user_profile_wrapper.dart';
 import 'package:Matework/services/user_data_channel_manager.dart';
 import 'package:Matework/viewmodels/chats_viewmodel.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
@@ -35,10 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
       TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold);
 
   static List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Explore',
-      style: optionStyle,
-    ),
+    UserProfileScreenWrapper(userId: 1),
     InvitesScreen(),
     ChatsScreen(),
     Text(

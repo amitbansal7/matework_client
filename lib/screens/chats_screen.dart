@@ -3,6 +3,7 @@ import 'package:Matework/models/chat_user.dart';
 import 'package:Matework/viewmodels/chat_viewmodel.dart';
 import 'package:Matework/viewmodels/chats_viewmodel.dart';
 import 'package:Matework/widgets/chat_user_tile.dart';
+import 'package:Matework/widgets/page_heading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,7 +25,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
     final viewModel = Provider.of<ChatsViewModel>(context, listen: false);
     return Column(
       children: [
-        _buildChatsHeading(),
+        PageHeadingWidget(title: "Connections"),
         SizedBox(height: 5),
         StreamBuilder<List<ChatUser>>(
           stream: viewModel.getChatUsers,
@@ -45,22 +46,6 @@ class _ChatsScreenState extends State<ChatsScreen> {
           },
         ),
       ],
-    );
-  }
-
-  Widget _buildChatsHeading() {
-    return Container(
-      padding: EdgeInsets.only(top: 30.h, left: 20.w),
-      alignment: Alignment.topLeft,
-      child: Text(
-        "Connections",
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 20.sp,
-          fontFamily: "PlayfairDisplay",
-          fontWeight: FontWeight.w600,
-        ),
-      ),
     );
   }
 

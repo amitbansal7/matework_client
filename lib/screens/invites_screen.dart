@@ -6,6 +6,7 @@ import 'package:Matework/network/response/invites_response.dart';
 import 'package:Matework/screens/user_profile_wrapper.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
 import 'package:Matework/widgets/invite_user_card.dart';
+import 'package:Matework/widgets/page_heading_widget.dart';
 import 'package:Matework/widgets/slide_left_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,7 @@ class _InvitesState extends State<InvitesScreen> {
     final viewModel = Provider.of<InvitesViewModel>(context, listen: false);
     return Column(
       children: [
-        _buildInvitesHeading(),
+        PageHeadingWidget(title: "Invites"),
         SizedBox(height: 5),
         StreamBuilder<List<Invite>>(
           stream: viewModel.getInvites,
@@ -48,22 +49,6 @@ class _InvitesState extends State<InvitesScreen> {
           },
         ),
       ],
-    );
-  }
-
-  Widget _buildInvitesHeading() {
-    return Container(
-      padding: EdgeInsets.only(top: 30.h, left: 20.w),
-      alignment: Alignment.centerLeft,
-      child: Text(
-        "Invites",
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 20.sp,
-          fontFamily: "PlayfairDisplay",
-          fontWeight: FontWeight.w600,
-        ),
-      ),
     );
   }
 
