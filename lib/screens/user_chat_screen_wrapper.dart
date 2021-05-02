@@ -7,6 +7,7 @@ import 'package:Matework/database.dart';
 import 'package:Matework/main.dart';
 import 'package:Matework/network/chats_rest_client.dart';
 import 'package:Matework/repositories/chats_repository.dart';
+import 'package:Matework/screens/user_profile_screen.dart';
 import 'package:Matework/services/user_data_channel_manager.dart';
 import 'package:Matework/viewmodels/chat_viewmodel.dart';
 import 'package:Matework/viewmodels/chats_viewmodel.dart';
@@ -193,14 +194,21 @@ class _UserChatScreenState extends State<UserChatScreen> {
                   },
                   icon: Icon(Icons.arrow_back, color: Colors.black)),
               SizedBox(width: 2.w),
-              ClipOval(
-                child: CachedNetworkImage(
-                  height: 33.h,
-                  imageUrl: chatUser.avatar ?? "",
-                  placeholder: (context, url) =>
-                      Image.asset("assets/images/avatar_placeholder.png"),
-                  errorWidget: (context, url, error) =>
-                      Image.asset("assets/images/avatar_placeholder.png"),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                      context, UserProfileScreenWrapper.routeName,
+                      arguments: {"userId": chatUser.id});
+                },
+                child: ClipOval(
+                  child: CachedNetworkImage(
+                    height: 33.h,
+                    imageUrl: chatUser.avatar ?? "",
+                    placeholder: (context, url) =>
+                        Image.asset("assets/images/avatar_placeholder.png"),
+                    errorWidget: (context, url, error) =>
+                        Image.asset("assets/images/avatar_placeholder.png"),
+                  ),
                 ),
               ),
               SizedBox(width: 12.w),
@@ -210,9 +218,16 @@ class _UserChatScreenState extends State<UserChatScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(height: 5.h),
-                    Text(
-                      "${chatUser.firstName} ${chatUser.lastName}",
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, UserProfileScreenWrapper.routeName,
+                            arguments: {"userId": chatUser.id});
+                      },
+                      child: Text(
+                        "${chatUser.firstName} ${chatUser.lastName}",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
                     ),
                     SizedBox(height: 5.h)
                   ],

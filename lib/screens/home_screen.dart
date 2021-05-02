@@ -1,6 +1,7 @@
 import 'package:Matework/database.dart';
 import 'package:Matework/network/chats_rest_client.dart';
 import 'package:Matework/network/invites_rest_client.dart';
+import 'package:Matework/network/user_profiles_rest_client.dart';
 import 'package:Matework/repositories/chats_repository.dart';
 import 'package:Matework/repositories/invites_repository.dart';
 import 'package:Matework/screens/chats_screen.dart';
@@ -8,6 +9,7 @@ import 'package:Matework/screens/invites_screen.dart';
 import 'package:Matework/services/user_data_channel_manager.dart';
 import 'package:Matework/viewmodels/chats_viewmodel.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
+import 'package:Matework/viewmodels/user_profile_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart' hide Headers;
 import 'package:provider/provider.dart';
@@ -72,6 +74,15 @@ class _HomeScreenState extends State<HomeScreen> {
           create: (_) => ChatsViewModel(),
           update: (_, db, chatsRestClient, viewModel) {
             viewModel!.chatsRestClient = chatsRestClient;
+            viewModel.setAppDatabase = db;
+            return viewModel;
+          },
+        ),
+        ChangeNotifierProxyProvider2<AppDatabase, UserProfilesRestClient,
+            UserProfileViewModel>(
+          create: (_) => UserProfileViewModel(),
+          update: (_, db, userProfilesRestClient, viewModel) {
+            viewModel!.userProfilesRestClient = userProfilesRestClient;
             viewModel.setAppDatabase = db;
             return viewModel;
           },

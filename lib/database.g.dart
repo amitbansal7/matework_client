@@ -1342,14 +1342,667 @@ class $ChatMessagesTable extends ChatMessages
   }
 }
 
+class UserProfile extends DataClass implements Insertable<UserProfile> {
+  final int id;
+  final String? firstName;
+  final String? lastName;
+  final String? avatar;
+  final String? shortBio;
+  final String? lookingFor;
+  final String? longBio;
+  final double? experience;
+  final int? age;
+  final String? externalLink;
+  final String? location;
+  final String? skills;
+  UserProfile(
+      {required this.id,
+      this.firstName,
+      this.lastName,
+      this.avatar,
+      this.shortBio,
+      this.lookingFor,
+      this.longBio,
+      this.experience,
+      this.age,
+      this.externalLink,
+      this.location,
+      this.skills});
+  factory UserProfile.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String? prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    final doubleType = db.typeSystem.forDartType<double>();
+    return UserProfile(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      firstName: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}first_name']),
+      lastName: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}last_name']),
+      avatar:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
+      shortBio: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}short_bio']),
+      lookingFor: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}looking_for']),
+      longBio: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}long_bio']),
+      experience: doubleType
+          .mapFromDatabaseResponse(data['${effectivePrefix}experience']),
+      age: intType.mapFromDatabaseResponse(data['${effectivePrefix}age']),
+      externalLink: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}external_link']),
+      location: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}location']),
+      skills:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}skills']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || firstName != null) {
+      map['first_name'] = Variable<String?>(firstName);
+    }
+    if (!nullToAbsent || lastName != null) {
+      map['last_name'] = Variable<String?>(lastName);
+    }
+    if (!nullToAbsent || avatar != null) {
+      map['avatar'] = Variable<String?>(avatar);
+    }
+    if (!nullToAbsent || shortBio != null) {
+      map['short_bio'] = Variable<String?>(shortBio);
+    }
+    if (!nullToAbsent || lookingFor != null) {
+      map['looking_for'] = Variable<String?>(lookingFor);
+    }
+    if (!nullToAbsent || longBio != null) {
+      map['long_bio'] = Variable<String?>(longBio);
+    }
+    if (!nullToAbsent || experience != null) {
+      map['experience'] = Variable<double?>(experience);
+    }
+    if (!nullToAbsent || age != null) {
+      map['age'] = Variable<int?>(age);
+    }
+    if (!nullToAbsent || externalLink != null) {
+      map['external_link'] = Variable<String?>(externalLink);
+    }
+    if (!nullToAbsent || location != null) {
+      map['location'] = Variable<String?>(location);
+    }
+    if (!nullToAbsent || skills != null) {
+      map['skills'] = Variable<String?>(skills);
+    }
+    return map;
+  }
+
+  UserProfilesCompanion toCompanion(bool nullToAbsent) {
+    return UserProfilesCompanion(
+      id: Value(id),
+      firstName: firstName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(firstName),
+      lastName: lastName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastName),
+      avatar:
+          avatar == null && nullToAbsent ? const Value.absent() : Value(avatar),
+      shortBio: shortBio == null && nullToAbsent
+          ? const Value.absent()
+          : Value(shortBio),
+      lookingFor: lookingFor == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lookingFor),
+      longBio: longBio == null && nullToAbsent
+          ? const Value.absent()
+          : Value(longBio),
+      experience: experience == null && nullToAbsent
+          ? const Value.absent()
+          : Value(experience),
+      age: age == null && nullToAbsent ? const Value.absent() : Value(age),
+      externalLink: externalLink == null && nullToAbsent
+          ? const Value.absent()
+          : Value(externalLink),
+      location: location == null && nullToAbsent
+          ? const Value.absent()
+          : Value(location),
+      skills:
+          skills == null && nullToAbsent ? const Value.absent() : Value(skills),
+    );
+  }
+
+  factory UserProfile.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return UserProfile(
+      id: serializer.fromJson<int>(json['id']),
+      firstName: serializer.fromJson<String?>(json['firstName']),
+      lastName: serializer.fromJson<String?>(json['lastName']),
+      avatar: serializer.fromJson<String?>(json['avatar']),
+      shortBio: serializer.fromJson<String?>(json['shortBio']),
+      lookingFor: serializer.fromJson<String?>(json['lookingFor']),
+      longBio: serializer.fromJson<String?>(json['longBio']),
+      experience: serializer.fromJson<double?>(json['experience']),
+      age: serializer.fromJson<int?>(json['age']),
+      externalLink: serializer.fromJson<String?>(json['externalLink']),
+      location: serializer.fromJson<String?>(json['location']),
+      skills: serializer.fromJson<String?>(json['skills']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'firstName': serializer.toJson<String?>(firstName),
+      'lastName': serializer.toJson<String?>(lastName),
+      'avatar': serializer.toJson<String?>(avatar),
+      'shortBio': serializer.toJson<String?>(shortBio),
+      'lookingFor': serializer.toJson<String?>(lookingFor),
+      'longBio': serializer.toJson<String?>(longBio),
+      'experience': serializer.toJson<double?>(experience),
+      'age': serializer.toJson<int?>(age),
+      'externalLink': serializer.toJson<String?>(externalLink),
+      'location': serializer.toJson<String?>(location),
+      'skills': serializer.toJson<String?>(skills),
+    };
+  }
+
+  UserProfile copyWith(
+          {int? id,
+          String? firstName,
+          String? lastName,
+          String? avatar,
+          String? shortBio,
+          String? lookingFor,
+          String? longBio,
+          double? experience,
+          int? age,
+          String? externalLink,
+          String? location,
+          String? skills}) =>
+      UserProfile(
+        id: id ?? this.id,
+        firstName: firstName ?? this.firstName,
+        lastName: lastName ?? this.lastName,
+        avatar: avatar ?? this.avatar,
+        shortBio: shortBio ?? this.shortBio,
+        lookingFor: lookingFor ?? this.lookingFor,
+        longBio: longBio ?? this.longBio,
+        experience: experience ?? this.experience,
+        age: age ?? this.age,
+        externalLink: externalLink ?? this.externalLink,
+        location: location ?? this.location,
+        skills: skills ?? this.skills,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('UserProfile(')
+          ..write('id: $id, ')
+          ..write('firstName: $firstName, ')
+          ..write('lastName: $lastName, ')
+          ..write('avatar: $avatar, ')
+          ..write('shortBio: $shortBio, ')
+          ..write('lookingFor: $lookingFor, ')
+          ..write('longBio: $longBio, ')
+          ..write('experience: $experience, ')
+          ..write('age: $age, ')
+          ..write('externalLink: $externalLink, ')
+          ..write('location: $location, ')
+          ..write('skills: $skills')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          firstName.hashCode,
+          $mrjc(
+              lastName.hashCode,
+              $mrjc(
+                  avatar.hashCode,
+                  $mrjc(
+                      shortBio.hashCode,
+                      $mrjc(
+                          lookingFor.hashCode,
+                          $mrjc(
+                              longBio.hashCode,
+                              $mrjc(
+                                  experience.hashCode,
+                                  $mrjc(
+                                      age.hashCode,
+                                      $mrjc(
+                                          externalLink.hashCode,
+                                          $mrjc(location.hashCode,
+                                              skills.hashCode))))))))))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is UserProfile &&
+          other.id == this.id &&
+          other.firstName == this.firstName &&
+          other.lastName == this.lastName &&
+          other.avatar == this.avatar &&
+          other.shortBio == this.shortBio &&
+          other.lookingFor == this.lookingFor &&
+          other.longBio == this.longBio &&
+          other.experience == this.experience &&
+          other.age == this.age &&
+          other.externalLink == this.externalLink &&
+          other.location == this.location &&
+          other.skills == this.skills);
+}
+
+class UserProfilesCompanion extends UpdateCompanion<UserProfile> {
+  final Value<int> id;
+  final Value<String?> firstName;
+  final Value<String?> lastName;
+  final Value<String?> avatar;
+  final Value<String?> shortBio;
+  final Value<String?> lookingFor;
+  final Value<String?> longBio;
+  final Value<double?> experience;
+  final Value<int?> age;
+  final Value<String?> externalLink;
+  final Value<String?> location;
+  final Value<String?> skills;
+  const UserProfilesCompanion({
+    this.id = const Value.absent(),
+    this.firstName = const Value.absent(),
+    this.lastName = const Value.absent(),
+    this.avatar = const Value.absent(),
+    this.shortBio = const Value.absent(),
+    this.lookingFor = const Value.absent(),
+    this.longBio = const Value.absent(),
+    this.experience = const Value.absent(),
+    this.age = const Value.absent(),
+    this.externalLink = const Value.absent(),
+    this.location = const Value.absent(),
+    this.skills = const Value.absent(),
+  });
+  UserProfilesCompanion.insert({
+    this.id = const Value.absent(),
+    this.firstName = const Value.absent(),
+    this.lastName = const Value.absent(),
+    this.avatar = const Value.absent(),
+    this.shortBio = const Value.absent(),
+    this.lookingFor = const Value.absent(),
+    this.longBio = const Value.absent(),
+    this.experience = const Value.absent(),
+    this.age = const Value.absent(),
+    this.externalLink = const Value.absent(),
+    this.location = const Value.absent(),
+    this.skills = const Value.absent(),
+  });
+  static Insertable<UserProfile> custom({
+    Expression<int>? id,
+    Expression<String?>? firstName,
+    Expression<String?>? lastName,
+    Expression<String?>? avatar,
+    Expression<String?>? shortBio,
+    Expression<String?>? lookingFor,
+    Expression<String?>? longBio,
+    Expression<double?>? experience,
+    Expression<int?>? age,
+    Expression<String?>? externalLink,
+    Expression<String?>? location,
+    Expression<String?>? skills,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (firstName != null) 'first_name': firstName,
+      if (lastName != null) 'last_name': lastName,
+      if (avatar != null) 'avatar': avatar,
+      if (shortBio != null) 'short_bio': shortBio,
+      if (lookingFor != null) 'looking_for': lookingFor,
+      if (longBio != null) 'long_bio': longBio,
+      if (experience != null) 'experience': experience,
+      if (age != null) 'age': age,
+      if (externalLink != null) 'external_link': externalLink,
+      if (location != null) 'location': location,
+      if (skills != null) 'skills': skills,
+    });
+  }
+
+  UserProfilesCompanion copyWith(
+      {Value<int>? id,
+      Value<String?>? firstName,
+      Value<String?>? lastName,
+      Value<String?>? avatar,
+      Value<String?>? shortBio,
+      Value<String?>? lookingFor,
+      Value<String?>? longBio,
+      Value<double?>? experience,
+      Value<int?>? age,
+      Value<String?>? externalLink,
+      Value<String?>? location,
+      Value<String?>? skills}) {
+    return UserProfilesCompanion(
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      avatar: avatar ?? this.avatar,
+      shortBio: shortBio ?? this.shortBio,
+      lookingFor: lookingFor ?? this.lookingFor,
+      longBio: longBio ?? this.longBio,
+      experience: experience ?? this.experience,
+      age: age ?? this.age,
+      externalLink: externalLink ?? this.externalLink,
+      location: location ?? this.location,
+      skills: skills ?? this.skills,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (firstName.present) {
+      map['first_name'] = Variable<String?>(firstName.value);
+    }
+    if (lastName.present) {
+      map['last_name'] = Variable<String?>(lastName.value);
+    }
+    if (avatar.present) {
+      map['avatar'] = Variable<String?>(avatar.value);
+    }
+    if (shortBio.present) {
+      map['short_bio'] = Variable<String?>(shortBio.value);
+    }
+    if (lookingFor.present) {
+      map['looking_for'] = Variable<String?>(lookingFor.value);
+    }
+    if (longBio.present) {
+      map['long_bio'] = Variable<String?>(longBio.value);
+    }
+    if (experience.present) {
+      map['experience'] = Variable<double?>(experience.value);
+    }
+    if (age.present) {
+      map['age'] = Variable<int?>(age.value);
+    }
+    if (externalLink.present) {
+      map['external_link'] = Variable<String?>(externalLink.value);
+    }
+    if (location.present) {
+      map['location'] = Variable<String?>(location.value);
+    }
+    if (skills.present) {
+      map['skills'] = Variable<String?>(skills.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserProfilesCompanion(')
+          ..write('id: $id, ')
+          ..write('firstName: $firstName, ')
+          ..write('lastName: $lastName, ')
+          ..write('avatar: $avatar, ')
+          ..write('shortBio: $shortBio, ')
+          ..write('lookingFor: $lookingFor, ')
+          ..write('longBio: $longBio, ')
+          ..write('experience: $experience, ')
+          ..write('age: $age, ')
+          ..write('externalLink: $externalLink, ')
+          ..write('location: $location, ')
+          ..write('skills: $skills')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UserProfilesTable extends UserProfiles
+    with TableInfo<$UserProfilesTable, UserProfile> {
+  final GeneratedDatabase _db;
+  final String? _alias;
+  $UserProfilesTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedIntColumn id = _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn(
+      'id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _firstNameMeta = const VerificationMeta('firstName');
+  @override
+  late final GeneratedTextColumn firstName = _constructFirstName();
+  GeneratedTextColumn _constructFirstName() {
+    return GeneratedTextColumn(
+      'first_name',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _lastNameMeta = const VerificationMeta('lastName');
+  @override
+  late final GeneratedTextColumn lastName = _constructLastName();
+  GeneratedTextColumn _constructLastName() {
+    return GeneratedTextColumn(
+      'last_name',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _avatarMeta = const VerificationMeta('avatar');
+  @override
+  late final GeneratedTextColumn avatar = _constructAvatar();
+  GeneratedTextColumn _constructAvatar() {
+    return GeneratedTextColumn(
+      'avatar',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _shortBioMeta = const VerificationMeta('shortBio');
+  @override
+  late final GeneratedTextColumn shortBio = _constructShortBio();
+  GeneratedTextColumn _constructShortBio() {
+    return GeneratedTextColumn(
+      'short_bio',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _lookingForMeta = const VerificationMeta('lookingFor');
+  @override
+  late final GeneratedTextColumn lookingFor = _constructLookingFor();
+  GeneratedTextColumn _constructLookingFor() {
+    return GeneratedTextColumn(
+      'looking_for',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _longBioMeta = const VerificationMeta('longBio');
+  @override
+  late final GeneratedTextColumn longBio = _constructLongBio();
+  GeneratedTextColumn _constructLongBio() {
+    return GeneratedTextColumn(
+      'long_bio',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _experienceMeta = const VerificationMeta('experience');
+  @override
+  late final GeneratedRealColumn experience = _constructExperience();
+  GeneratedRealColumn _constructExperience() {
+    return GeneratedRealColumn(
+      'experience',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _ageMeta = const VerificationMeta('age');
+  @override
+  late final GeneratedIntColumn age = _constructAge();
+  GeneratedIntColumn _constructAge() {
+    return GeneratedIntColumn(
+      'age',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _externalLinkMeta =
+      const VerificationMeta('externalLink');
+  @override
+  late final GeneratedTextColumn externalLink = _constructExternalLink();
+  GeneratedTextColumn _constructExternalLink() {
+    return GeneratedTextColumn(
+      'external_link',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _locationMeta = const VerificationMeta('location');
+  @override
+  late final GeneratedTextColumn location = _constructLocation();
+  GeneratedTextColumn _constructLocation() {
+    return GeneratedTextColumn(
+      'location',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _skillsMeta = const VerificationMeta('skills');
+  @override
+  late final GeneratedTextColumn skills = _constructSkills();
+  GeneratedTextColumn _constructSkills() {
+    return GeneratedTextColumn(
+      'skills',
+      $tableName,
+      true,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        firstName,
+        lastName,
+        avatar,
+        shortBio,
+        lookingFor,
+        longBio,
+        experience,
+        age,
+        externalLink,
+        location,
+        skills
+      ];
+  @override
+  $UserProfilesTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'user_profiles';
+  @override
+  final String actualTableName = 'user_profiles';
+  @override
+  VerificationContext validateIntegrity(Insertable<UserProfile> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('first_name')) {
+      context.handle(_firstNameMeta,
+          firstName.isAcceptableOrUnknown(data['first_name']!, _firstNameMeta));
+    }
+    if (data.containsKey('last_name')) {
+      context.handle(_lastNameMeta,
+          lastName.isAcceptableOrUnknown(data['last_name']!, _lastNameMeta));
+    }
+    if (data.containsKey('avatar')) {
+      context.handle(_avatarMeta,
+          avatar.isAcceptableOrUnknown(data['avatar']!, _avatarMeta));
+    }
+    if (data.containsKey('short_bio')) {
+      context.handle(_shortBioMeta,
+          shortBio.isAcceptableOrUnknown(data['short_bio']!, _shortBioMeta));
+    }
+    if (data.containsKey('looking_for')) {
+      context.handle(
+          _lookingForMeta,
+          lookingFor.isAcceptableOrUnknown(
+              data['looking_for']!, _lookingForMeta));
+    }
+    if (data.containsKey('long_bio')) {
+      context.handle(_longBioMeta,
+          longBio.isAcceptableOrUnknown(data['long_bio']!, _longBioMeta));
+    }
+    if (data.containsKey('experience')) {
+      context.handle(
+          _experienceMeta,
+          experience.isAcceptableOrUnknown(
+              data['experience']!, _experienceMeta));
+    }
+    if (data.containsKey('age')) {
+      context.handle(
+          _ageMeta, age.isAcceptableOrUnknown(data['age']!, _ageMeta));
+    }
+    if (data.containsKey('external_link')) {
+      context.handle(
+          _externalLinkMeta,
+          externalLink.isAcceptableOrUnknown(
+              data['external_link']!, _externalLinkMeta));
+    }
+    if (data.containsKey('location')) {
+      context.handle(_locationMeta,
+          location.isAcceptableOrUnknown(data['location']!, _locationMeta));
+    }
+    if (data.containsKey('skills')) {
+      context.handle(_skillsMeta,
+          skills.isAcceptableOrUnknown(data['skills']!, _skillsMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UserProfile map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return UserProfile.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $UserProfilesTable createAlias(String alias) {
+    return $UserProfilesTable(_db, alias);
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   late final $InvitesTable invites = $InvitesTable(this);
   late final $ChatUsersTable chatUsers = $ChatUsersTable(this);
   late final $ChatMessagesTable chatMessages = $ChatMessagesTable(this);
+  late final $UserProfilesTable userProfiles = $UserProfilesTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [invites, chatUsers, chatMessages];
+      [invites, chatUsers, chatMessages, userProfiles];
 }

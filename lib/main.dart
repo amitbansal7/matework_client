@@ -1,7 +1,9 @@
 import 'package:Matework/network/auth_rest_client.dart';
 import 'package:Matework/network/response/api_response.dart';
+import 'package:Matework/network/user_profiles_rest_client.dart';
 import 'package:Matework/repositories/chats_repository.dart';
 import 'package:Matework/repositories/invites_repository.dart';
+import 'package:Matework/screens/account_screen.dart';
 import 'package:Matework/screens/auth_screen.dart';
 import 'package:Matework/screens/home_screen.dart';
 import 'package:Matework/screens/login_screen.dart';
@@ -54,6 +56,11 @@ class MyApp extends StatelessWidget {
                     return ChatsRestClient(dio);
                   },
                 ),
+                ProxyProvider<Dio, UserProfilesRestClient>(
+                  update: (_, dio, __) {
+                    return UserProfilesRestClient(dio);
+                  },
+                ),
                 ProxyProvider2<AppDatabase, FlutterSecureStorage,
                     UserDataChannelManager>(
                   update: (_, db, storage, __) {
@@ -74,8 +81,13 @@ class MyApp extends StatelessWidget {
                   } else if (settings.name == OtpScreenWrapper.routeName) {
                     return SlideLeftRoute(
                         page: OtpScreenWrapper(phone: arguments["phone"]));
-                  } else if (settings.name == UserProfileScreen.routeName) {
-                    return SlideLeftRoute(page: UserProfileScreen());
+                  } else if (settings.name ==
+                      UserProfileScreenWrapper.routeName) {
+                    return SlideLeftRoute(
+                        page: UserProfileScreenWrapper(
+                            userId: arguments["userId"]));
+                  } else if (settings.name == AccountScreen.routeName) {
+                    return SlideLeftRoute(page: AccountScreen());
                   } else if (settings.name == UserChatScreenWrapper.routeName) {
                     return SlideLeftRoute(
                         page: UserChatScreenWrapper(

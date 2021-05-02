@@ -1,4 +1,3 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:moor/moor.dart';
 
 class Invites extends Table {

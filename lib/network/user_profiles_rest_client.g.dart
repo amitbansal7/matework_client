@@ -1,14 +1,14 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'chats_rest_client.dart';
+part of 'user_profiles_rest_client.dart';
 
 // **************************************************************************
 // RetrofitGenerator
 // **************************************************************************
 
-class _ChatsRestClient implements ChatsRestClient {
-  _ChatsRestClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'http://192.168.1.6:3000/api/v1/chats';
+class _UserProfilesRestClient implements UserProfilesRestClient {
+  _UserProfilesRestClient(this._dio, {this.baseUrl}) {
+    baseUrl ??= 'http://192.168.1.6:3000/api/v1/profiles';
   }
 
   final Dio _dio;
@@ -16,20 +16,17 @@ class _ChatsRestClient implements ChatsRestClient {
   String? baseUrl;
 
   @override
-  Future<ApiResponse<ChatsResponse>> getAllChatUsers() async {
+  Future<ApiResponse<UserProfileResponse>> getProfileById(id) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ApiResponse<ChatsResponse>>(Options(
-                method: 'GET',
-                headers: <String, dynamic>{},
-                extra: _extra,
-                contentType: 'application/x-www-form-urlencoded')
-            .compose(_dio.options, '/',
-                queryParameters: queryParameters, data: _data)
-            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ApiResponse<ChatsResponse>.fromJson(_result.data!);
+        _setStreamType<ApiResponse<UserProfileResponse>>(
+            Options(method: 'GET', headers: <String, dynamic>{}, extra: _extra)
+                .compose(_dio.options, '/$id',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ApiResponse<UserProfileResponse>.fromJson(_result.data!);
     return value;
   }
 

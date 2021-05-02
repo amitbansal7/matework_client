@@ -30,21 +30,23 @@ class ChatUserTile extends StatelessWidget {
               Image.asset("assets/images/avatar_placeholder.png"),
         ),
       ),
-      title: Container(
-        padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "${chatUser.firstName} ${chatUser.lastName}",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.sp),
-            ),
-            Text(
-              timeago.format(new DateTime.fromMillisecondsSinceEpoch(
-                  chatUser.updatedAt * 1000)),
-              style: TextStyle(fontSize: 10.sp),
-            ),
-          ],
+      title: GestureDetector(
+        child: Container(
+          padding: EdgeInsets.only(bottom: 7.h, top: 7.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "${chatUser.firstName} ${chatUser.lastName}",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14.sp),
+              ),
+              Text(
+                timeago.format(new DateTime.fromMillisecondsSinceEpoch(
+                    chatUser.updatedAt * 1000)),
+                style: TextStyle(fontSize: 10.sp),
+              ),
+            ],
+          ),
         ),
       ),
       subtitle: FutureBuilder<ChatMessage>(
@@ -57,6 +59,7 @@ class ChatUserTile extends StatelessWidget {
                 Flexible(
                   child: Text(
                     lastMessageF.data?.message ?? "",
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style:
                         TextStyle(fontWeight: FontWeight.w400, fontSize: 12.sp),

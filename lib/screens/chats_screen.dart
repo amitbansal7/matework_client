@@ -24,10 +24,8 @@ class _ChatsScreenState extends State<ChatsScreen> {
     final viewModel = Provider.of<ChatsViewModel>(context, listen: false);
     return Column(
       children: [
-        Expanded(
-          flex: 2,
-          child: _buildChatsHeading(),
-        ),
+        _buildChatsHeading(),
+        SizedBox(height: 5),
         StreamBuilder<List<ChatUser>>(
           stream: viewModel.getChatUsers,
           builder: (context, snapshot) {
@@ -52,12 +50,13 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   Widget _buildChatsHeading() {
     return Container(
-      padding: EdgeInsets.only(top: 30.h),
+      padding: EdgeInsets.only(top: 30.h, left: 20.w),
+      alignment: Alignment.topLeft,
       child: Text(
         "Connections",
         style: TextStyle(
           color: Colors.black,
-          fontSize: 40.sp,
+          fontSize: 20.sp,
           fontFamily: "PlayfairDisplay",
           fontWeight: FontWeight.w600,
         ),

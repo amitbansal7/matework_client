@@ -5,7 +5,7 @@ import 'package:Matework/network/response/api_response.dart';
 import 'package:Matework/network/response/invites_response.dart';
 import 'package:Matework/screens/user_profile_screen.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
-import 'package:Matework/widgets/invite_user_tile.dart';
+import 'package:Matework/widgets/invite_user_card.dart';
 import 'package:Matework/widgets/slide_left_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,10 +27,8 @@ class _InvitesState extends State<InvitesScreen> {
     final viewModel = Provider.of<InvitesViewModel>(context, listen: false);
     return Column(
       children: [
-        Expanded(
-          flex: 2,
-          child: _buildInvitesHeading(),
-        ),
+        _buildInvitesHeading(),
+        SizedBox(height: 5),
         StreamBuilder<List<Invite>>(
           stream: viewModel.getInvites,
           builder: (context, snapshot) {
@@ -55,12 +53,13 @@ class _InvitesState extends State<InvitesScreen> {
 
   Widget _buildInvitesHeading() {
     return Container(
-      padding: EdgeInsets.only(top: 30.h),
+      padding: EdgeInsets.only(top: 30.h, left: 20.w),
+      alignment: Alignment.centerLeft,
       child: Text(
         "Invites",
         style: TextStyle(
           color: Colors.black,
-          fontSize: 40.sp,
+          fontSize: 20.sp,
           fontFamily: "PlayfairDisplay",
           fontWeight: FontWeight.w600,
         ),
@@ -69,19 +68,21 @@ class _InvitesState extends State<InvitesScreen> {
   }
 
   Widget _buildInvitesList(List<Invite> invites) {
-    return ListView.separated(
+    return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
-      separatorBuilder: (context, index) {
-        return Divider(
-          thickness: 0.6,
-          endIndent: 25.w,
-          indent: 60.w,
-        );
-      },
       itemCount: invites.length,
       itemBuilder: (ctx, idx) {
         final invite = invites[idx];
-        return InviteUserTile(invite: invite);
+        return Container(
+          padding: EdgeInsets.only(bottom: 15, left: 10, right: 10),
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, UserProfileScreenWrapper.routeName,
+                  arguments: {"userId": invite.userId});
+            },
+            child: InviteUserCard(invite: invite),
+          ),
+        );
       },
     );
   }

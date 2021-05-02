@@ -12,10 +12,11 @@ import 'package:sqflite/sqflite.dart' show getDatabasesPath;
 import 'package:path/path.dart' as p;
 
 import 'models/chat_message.dart';
+import 'models/user_profile.dart';
 
 part 'database.g.dart';
 
-@UseMoor(tables: [Invites, ChatUsers, ChatMessages])
+@UseMoor(tables: [Invites, ChatUsers, ChatMessages, UserProfiles])
 class AppDatabase extends _$AppDatabase {
   AppDatabase()
       : super(LazyDatabase(() async {
@@ -140,5 +141,14 @@ class AppDatabase extends _$AppDatabase {
     return (update(chatUsers)..where((t) => t.inviteId.equals(inviteId))).write(
       ChatUsersCompanion(updatedAt: Value(updatedAt)),
     );
+  }
+
+  Stream<UserProfile> findUserProfileById(int id) {
+    return (select(userProfiles)..where((tbl) => tbl.id.equals(id)))
+        .watchSingle();
+  }
+
+  Future<void> createOrUpdateUseProfile(UserProfilesCompanion profile) {
+    return into(userProfiles).insertOnConflictUpdate(profile);
   }
 }
