@@ -25,7 +25,7 @@ class UserProfileScreenWrapper extends StatelessWidget {
           },
         )
       ],
-      child: UserProfileWidget(userId: userId),
+      child: Scaffold(body: UserProfileWidget(userId: userId)),
     );
   }
 }

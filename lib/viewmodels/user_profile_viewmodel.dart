@@ -39,6 +39,7 @@ class UserProfileViewModel extends ChangeNotifier {
       avatar: Value(profile.avatar),
       shortBio: Value(profile.shortBio),
       experience: Value(profile.experience),
+      longBio: Value(profile.longBio),
       age: Value(profile.age),
       externalLink: Value(profile.externalLink),
       location: Value(profile.location),

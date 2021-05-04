@@ -8,7 +8,7 @@ part of 'invites_rest_client.dart';
 
 class _InvitesRestClient implements InvitesRestClient {
   _InvitesRestClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'http://192.168.1.9:3000/api/v1/invites';
+    baseUrl ??= 'http://192.168.1.7:3000/api/v1/invites';
   }
 
   final Dio _dio;
