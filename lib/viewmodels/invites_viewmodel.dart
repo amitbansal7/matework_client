@@ -2,19 +2,24 @@
 
 import 'dart:collection';
 
+import 'package:Matework/converts/invites_converter.dart';
 import 'package:Matework/models/invite.dart';
 import 'package:Matework/network/invites_rest_client.dart';
 import 'package:Matework/repositories/invites_repository.dart';
 import 'package:Matework/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:tuple/tuple.dart';
 
 import '../database.dart';
 
 class InvitesViewModel extends ChangeNotifier {
+  static const INVITES_UPDATE_AT = "InvitesFromApi";
   InvitesRestClient invitesRestClient;
   AppDatabase db;
+
+  FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   Stream<List<Invite>> _invites;
 
@@ -62,6 +67,10 @@ class InvitesViewModel extends ChangeNotifier {
   }
 
   void getInvitesFromApi() async {
+    final currentTs = DateTime.now().millisecondsSinceEpoch;
+    final tsString = (await secureStorage.read(key: INVITES_UPDATE_AT)) ?? "0";
+    final updateAt = int.parse(tsString);
+    if (updateAt != 0 && updateAt > currentTs) return;
     try {
       final apiResponse = await invitesRestClient?.getAllInvites();
       final dbInvites = await db.getAllInvites();
@@ -69,20 +78,14 @@ class InvitesViewModel extends ChangeNotifier {
 
       final inviteResponse = apiResponse?.data?.invites;
       final invites = inviteResponse?.map((e) {
-        return Invite(
-          id: e.id,
-          message: e.message,
-          createdAt: e.createdAt,
-          seen: allSeen.contains(e.id),
-          userAvatar: e.user?.avatar,
-          userFirstName: e.user?.firstName,
-          userLastName: e.user?.lastName,
-          userShortBio: e.user?.shortBio,
-          userId: e.user?.id,
-        );
+        return inviteFromInvitesResponse(e, allSeen.contains(e.id));
       });
-      print(invites);
+
       db.deleteAllAndinsertInvites(invites.toList());
+      final nextUpdateAt =
+          DateTime.now().add(Duration(minutes: 15)).millisecondsSinceEpoch;
+      secureStorage.write(
+          key: INVITES_UPDATE_AT, value: nextUpdateAt.toString());
     } on DioError catch (e) {
       print(e.message);
     }

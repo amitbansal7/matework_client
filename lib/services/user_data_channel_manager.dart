@@ -1,6 +1,10 @@
 import 'dart:convert';
 
+import 'package:Matework/converts/chats_converter.dart';
+import 'package:Matework/converts/invites_converter.dart';
 import 'package:Matework/database.dart';
+import 'package:Matework/network/response/chat_user_response.dart';
+import 'package:Matework/network/response/invite_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:moor/moor.dart';
 import 'package:websocket_manager/websocket_manager.dart';
@@ -56,46 +60,70 @@ class UserDataChannelManager {
     });
 
     socket.send(data);
+    _registerOnMessage();
+  }
 
+  void _registerOnMessage() {
     socket.onMessage((dynamic message) {
       final Map<String, dynamic> data = json.decode(message);
       if (data["type"] == "ping") {
         return;
       }
+      if (!data.containsKey("identifier") ||
+          json.decode(data["identifier"])["channel"] != "UserDataChannel" ||
+          !data.containsKey("message")) {
+        return;
+      }
+      print(data);
 
-      if (data.containsKey("identifier") &&
-          json.decode(data["identifier"])["channel"] == "UserDataChannel" &&
-          data.containsKey("message") &&
-          data["message"]["type"] == "Message") {
-        print(data);
-
-        final messagePacket = data["message"];
-
-        db.setChatUserUpdatedAtByInviteId(messagePacket["invite_id"],
-            DateTime.now().millisecondsSinceEpoch ~/ 1000);
-
-        if (messagePacket["sender_id"] == myId) {
-          db.markChatMessageAsSend(
-              messagePacket["message_client_id"], messagePacket["id"]);
-        } else {
-          print("Inserting message");
-          db.insertChatMessage(
-            ChatMessagesCompanion(
-              serverId: Value(messagePacket["id"]),
-              inviteId: Value(messagePacket["invite_id"]),
-              senderId: Value(messagePacket["sender_id"]),
-              message: Value(messagePacket["message"]),
-              sent: Value(true),
-              seen: Value(false),
-              createdAt: Value(messagePacket["created_at"]),
-            ),
-          );
-        }
-        if (myId != messagePacket["sender_id"]) {
-          _sendMessageConfirmation(messagePacket["id"]);
-        }
+      final type = data["message"]["type"];
+      final packet = data["message"]["packet"];
+      if (type == "message_created") {
+        _handleChatMessage(packet);
+      } else if (type == "invite_created") {
+        _handeInviteCreated(packet);
+      } else if (type == "invite_accepted") {
+        _handeInviteAccepted(packet);
       }
     });
+  }
+
+  void _handeInviteCreated(Map<String, dynamic> packet) {
+    final inviteResponse = InviteResponse.fromJson(packet);
+    final invite = inviteFromInvitesResponse(inviteResponse, false);
+    db.insertInvite(invite);
+  }
+
+  void _handeInviteAccepted(Map<String, dynamic> packet) {
+    final chatUserResponse = ChatUserResponse.fromJson(packet);
+    final chatUser = chatUserResponseToChatUser(chatUserResponse);
+    db.insertChatUser(chatUser);
+    db.deleteInviteById(chatUser.inviteId);
+  }
+
+  void _handleChatMessage(Map<String, dynamic> packet) {
+    db.setChatUserUpdatedAtByInviteId(
+        packet["invite_id"], DateTime.now().millisecondsSinceEpoch ~/ 1000);
+
+    if (packet["sender_id"] == myId) {
+      db.markChatMessageAsSend(packet["message_client_id"], packet["id"]);
+    } else {
+      print("Inserting message");
+      db.insertChatMessage(
+        ChatMessagesCompanion(
+          serverId: Value(packet["id"]),
+          inviteId: Value(packet["invite_id"]),
+          senderId: Value(packet["sender_id"]),
+          message: Value(packet["message"]),
+          sent: Value(true),
+          seen: Value(false),
+          createdAt: Value(packet["created_at"]),
+        ),
+      );
+    }
+    if (myId != packet["sender_id"]) {
+      _sendMessageConfirmation(packet["id"]);
+    }
   }
 
   void _sendUnSendMessages() {

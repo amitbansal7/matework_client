@@ -59,6 +59,10 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
+  Future<void> insertChatUser(ChatUser entry) {
+    return into(chatUsers).insertOnConflictUpdate(entry);
+  }
+
   Stream<List<ChatUser>> watchAllChatUsers() => (select(chatUsers)
         ..orderBy([
           (t) => OrderingTerm(expression: t.updatedAt, mode: OrderingMode.desc)
