@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 
 import '../database.dart';
 
@@ -50,11 +51,71 @@ class UserProfileWidget extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 20),
+              _buildAbout(userProfile),
+              SizedBox(height: 20),
               _buildSkills(userProfile),
+              SizedBox(height: 20),
+              _buildLookingFor(userProfile),
             ],
           );
         }
       },
+    );
+  }
+
+  Widget _buildLookingFor(UserProfile userProfile) {
+    return Container(
+      padding: EdgeInsets.all(15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            child: Text(
+              "I'm looking for",
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            padding: EdgeInsets.all(2),
+          ),
+          Container(
+            constraints: BoxConstraints(
+              minHeight: 40.0,
+            ),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF2F5F8),
+              border: Border.all(
+                color: const Color(0xFFCDCFD2),
+                width: 2.0,
+              ),
+            ),
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: ReadMoreText(
+                userProfile.lookingFor ?? "",
+                trimLines: 2,
+                style: TextStyle(color: Colors.black),
+                colorClickableText: Colors.black,
+                trimMode: TrimMode.Line,
+                trimCollapsedText: 'Show more',
+                trimExpandedText: 'Show less',
+                lessStyle: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                moreStyle: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -93,6 +154,62 @@ class UserProfileWidget extends StatelessWidget {
     );
   }
 
+  Widget _buildAbout(UserProfile userProfile) {
+    return Container(
+      padding: EdgeInsets.all(15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            child: Text(
+              "About",
+              style: TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            padding: EdgeInsets.all(2),
+          ),
+          Container(
+            constraints: BoxConstraints(
+              minHeight: 40.0,
+            ),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF2F5F8),
+              border: Border.all(
+                color: const Color(0xFFCDCFD2),
+                width: 2.0,
+              ),
+            ),
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: ReadMoreText(
+                userProfile.longBio ?? "",
+                trimLines: 2,
+                style: TextStyle(color: Colors.black),
+                colorClickableText: Colors.black,
+                trimMode: TrimMode.Line,
+                trimCollapsedText: 'Show more',
+                trimExpandedText: 'Show less',
+                lessStyle: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                moreStyle: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _buildSkills(UserProfile userProfile) {
     final skillsJson = json.decode(userProfile.skills ?? "[]");
     List<SkillDao> skills = List<SkillDao>.from(
@@ -101,7 +218,7 @@ class UserProfileWidget extends StatelessWidget {
     skills.sort((a, b) => b.rating.compareTo(a.rating));
 
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.only(left: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -109,35 +226,29 @@ class UserProfileWidget extends StatelessWidget {
             child: Text(
               "Skills",
               style: TextStyle(
-                fontSize: 15.sp,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            padding: EdgeInsets.all(3),
           ),
-          SizedBox(
-            height: 42.h,
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemCount: skills.length,
-              itemBuilder: (BuildContext context, int idx) {
-                final skill = skills[idx];
-                return Card(
-                  elevation: 2,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.all(10.w),
-                    child: Text(
-                      "${skill.name} • ${skill.rating}",
-                      style: TextStyle(fontSize: 18.sp),
+          Wrap(
+            children: skills
+                .map(
+                  (skill) => Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Container(
+                      padding: EdgeInsets.all(4.w),
+                      child: Text(
+                        "${skill.name} • ${skill.rating}",
+                        style: TextStyle(fontSize: 12.sp),
+                      ),
                     ),
                   ),
-                );
-              },
-            ),
+                )
+                .toList(),
           ),
         ],
       ),
