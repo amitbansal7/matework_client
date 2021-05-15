@@ -61,6 +61,7 @@ class UserDataChannelManager {
 
     socket.send(data);
     _registerOnMessage();
+    socket.onClose((data) => print("Socket session Closed $data"));
   }
 
   void _registerOnMessage() {

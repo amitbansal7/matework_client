@@ -206,10 +206,14 @@ class InviteUserCard extends StatelessWidget {
     showDialog(
       context: ogContext,
       builder: (BuildContext context) {
-        return AcceptInviteAlertForm(onSend: (String reply) {
-          _acceptInvite(invite, ogContext, reply);
-          Navigator.of(context, rootNavigator: true).pop();
-        });
+        return AcceptInviteAlertForm(
+          onSend: (String reply) {
+            _acceptInvite(invite, ogContext, reply);
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+          title: "Reply And Accept Invite",
+          okButtonText: "Send & Accept",
+        );
       },
     );
   }

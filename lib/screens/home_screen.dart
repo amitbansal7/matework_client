@@ -16,6 +16,8 @@ import 'package:dio/dio.dart' hide Headers;
 import 'package:provider/provider.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'explore_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   static final routeName = "home";
 
@@ -36,13 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
       TextStyle(fontSize: 30.sp, fontWeight: FontWeight.bold);
 
   static List<Widget> _widgetOptions = <Widget>[
-    UserProfileScreenWrapper(userId: 1),
+    ExploreScreen(),
     InvitesScreen(),
     ChatsScreen(),
-    Text(
-      'Profile',
-      style: optionStyle,
-    ),
+    UserProfileScreenWrapper(userId: 1),
   ];
 
   @override

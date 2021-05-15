@@ -49,6 +49,6 @@ class _Converter<T> implements JsonConverter<T, Object> {
 
   @override
   Object toJson(T object) {
-    return T as Object;
+    return T;
   }
 }

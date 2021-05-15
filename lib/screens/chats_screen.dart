@@ -1,6 +1,4 @@
 import 'package:Matework/database.dart';
-import 'package:Matework/models/chat_user.dart';
-import 'package:Matework/viewmodels/chat_viewmodel.dart';
 import 'package:Matework/viewmodels/chats_viewmodel.dart';
 import 'package:Matework/widgets/chat_user_tile.dart';
 import 'package:Matework/widgets/page_heading_widget.dart';

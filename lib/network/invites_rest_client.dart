@@ -15,6 +15,13 @@ abstract class InvitesRestClient {
   @FormUrlEncoded()
   Future<ApiResponse<InvitesResponse>> getAllInvites();
 
+  @POST("/")
+  @FormUrlEncoded()
+  Future<ApiResponse<InvitesResponse>> createInvite(
+    @Field("to_user_id") int toUserId,
+    @Field("message") String message,
+  );
+
   @PUT("/accept")
   @FormUrlEncoded()
   Future<ApiResponse<String>> acceptInvite(@Field("invite_id") int inviteId);

@@ -3,16 +3,33 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AcceptInviteAlertForm extends StatefulWidget {
   Function onSend;
-  AcceptInviteAlertForm({required this.onSend});
+  String title;
+  String okButtonText;
+
+  AcceptInviteAlertForm({
+    required this.title,
+    required this.okButtonText,
+    required this.onSend,
+  });
 
   @override
-  _AcceptInviteFormSAlertstate createState() =>
-      _AcceptInviteFormSAlertstate(onSend: this.onSend);
+  _AcceptInviteFormSAlertstate createState() => _AcceptInviteFormSAlertstate(
+        title: title,
+        okButtonText: okButtonText,
+        onSend: onSend,
+      );
 }
 
 class _AcceptInviteFormSAlertstate extends State<AcceptInviteAlertForm> {
   Function onSend;
-  _AcceptInviteFormSAlertstate({required this.onSend});
+  String title;
+  String okButtonText;
+
+  _AcceptInviteFormSAlertstate({
+    required this.title,
+    required this.okButtonText,
+    required this.onSend,
+  });
 
   final iniviteReplyController = TextEditingController();
   bool _validate = false;
@@ -20,7 +37,7 @@ class _AcceptInviteFormSAlertstate extends State<AcceptInviteAlertForm> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Reply and Accept Invite"),
+      title: Text(title),
       content: Container(
         constraints: BoxConstraints(minHeight: 60.0, minWidth: 300.w),
         child: TextField(
@@ -44,7 +61,7 @@ class _AcceptInviteFormSAlertstate extends State<AcceptInviteAlertForm> {
           },
         ),
         TextButton(
-          child: Text("Send & Accept"),
+          child: Text(okButtonText),
           onPressed: () {
             if (iniviteReplyController.text.isEmpty) {
               setState(() {

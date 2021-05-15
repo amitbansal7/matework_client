@@ -46,6 +46,7 @@ class UserProfileViewModel extends ChangeNotifier {
       lookingFor: Value(profile.lookingFor),
       skills: Value(jsonEncode(profile.skills)),
     );
+
     db.createOrUpdateUseProfile(userProfile);
   }
 }
