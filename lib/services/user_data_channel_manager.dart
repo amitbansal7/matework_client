@@ -47,9 +47,8 @@ class UserDataChannelManager {
 
   void _setupConnection() async {
     final token = await FlutterSecureStorage().read(key: AUTHORIZATION);
-    socket = WebsocketManager(BASE_SOCKET_URL, {
-      AUTHORIZATION: token,
-    });
+    final urlWithToken = BASE_SOCKET_URL + "?$AUTHORIZATION=$token";
+    socket = WebsocketManager(urlWithToken);
     socket.close();
     socket.connect();
     final data = jsonEncode({
