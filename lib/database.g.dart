@@ -30,26 +30,25 @@ class Invite extends DataClass implements Insertable<Invite> {
   factory Invite.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
-    final boolType = db.typeSystem.forDartType<bool>();
     return Invite(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      message:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}message']),
-      createdAt: intType
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      message: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}message']),
+      createdAt: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at'])!,
-      userId:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}user_id']),
-      userFirstName: stringType
+      userId: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}user_id']),
+      userFirstName: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}user_first_name']),
-      userLastName: stringType
+      userLastName: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}user_last_name']),
-      userAvatar: stringType
+      userAvatar: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}user_avatar']),
-      userShortBio: stringType
+      userShortBio: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}user_short_bio']),
-      seen: boolType.mapFromDatabaseResponse(data['${effectivePrefix}seen'])!,
+      seen: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}seen'])!,
     );
   }
   @override
@@ -190,7 +189,7 @@ class Invite extends DataClass implements Insertable<Invite> {
                               $mrjc(
                                   userShortBio.hashCode, seen.hashCode)))))))));
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Invite &&
           other.id == this.id &&
@@ -235,7 +234,7 @@ class InvitesCompanion extends UpdateCompanion<Invite> {
     this.userAvatar = const Value.absent(),
     this.userShortBio = const Value.absent(),
     required bool seen,
-  })   : createdAt = Value(createdAt),
+  })  : createdAt = Value(createdAt),
         seen = Value(seen);
   static Insertable<Invite> custom({
     Expression<int>? id,
@@ -544,19 +543,18 @@ class ChatUser extends DataClass implements Insertable<ChatUser> {
   factory ChatUser.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
     return ChatUser(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      firstName: stringType
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      firstName: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}first_name']),
-      lastName: stringType
+      lastName: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}last_name']),
-      avatar:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
-      inviteId:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}invite_id'])!,
-      updatedAt: intType
+      avatar: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
+      inviteId: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}invite_id'])!,
+      updatedAt: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}updated_at'])!,
     );
   }
@@ -657,7 +655,7 @@ class ChatUser extends DataClass implements Insertable<ChatUser> {
               $mrjc(avatar.hashCode,
                   $mrjc(inviteId.hashCode, updatedAt.hashCode))))));
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is ChatUser &&
           other.id == this.id &&
@@ -690,7 +688,7 @@ class ChatUsersCompanion extends UpdateCompanion<ChatUser> {
     this.avatar = const Value.absent(),
     required int inviteId,
     required int updatedAt,
-  })   : inviteId = Value(inviteId),
+  })  : inviteId = Value(inviteId),
         updatedAt = Value(updatedAt);
   static Insertable<ChatUser> custom({
     Expression<int>? id,
@@ -915,22 +913,22 @@ class ChatMessage extends DataClass implements Insertable<ChatMessage> {
   factory ChatMessage.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
-    final boolType = db.typeSystem.forDartType<bool>();
     return ChatMessage(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      serverId:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}server_id']),
-      inviteId:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}invite_id'])!,
-      senderId:
-          intType.mapFromDatabaseResponse(data['${effectivePrefix}sender_id'])!,
-      message: stringType
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      serverId: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}server_id']),
+      inviteId: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}invite_id'])!,
+      senderId: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}sender_id'])!,
+      message: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}message'])!,
-      sent: boolType.mapFromDatabaseResponse(data['${effectivePrefix}sent'])!,
-      seen: boolType.mapFromDatabaseResponse(data['${effectivePrefix}seen'])!,
-      createdAt: intType
+      sent: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}sent'])!,
+      seen: const BoolType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}seen'])!,
+      createdAt: const IntType()
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at'])!,
     );
   }
@@ -1042,7 +1040,7 @@ class ChatMessage extends DataClass implements Insertable<ChatMessage> {
                       $mrjc(sent.hashCode,
                           $mrjc(seen.hashCode, createdAt.hashCode))))))));
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is ChatMessage &&
           other.id == this.id &&
@@ -1083,7 +1081,7 @@ class ChatMessagesCompanion extends UpdateCompanion<ChatMessage> {
     required bool sent,
     required bool seen,
     required int createdAt,
-  })   : inviteId = Value(inviteId),
+  })  : inviteId = Value(inviteId),
         senderId = Value(senderId),
         message = Value(message),
         sent = Value(sent),
@@ -1371,32 +1369,31 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
   factory UserProfile.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
-    final intType = db.typeSystem.forDartType<int>();
-    final stringType = db.typeSystem.forDartType<String>();
-    final doubleType = db.typeSystem.forDartType<double>();
     return UserProfile(
-      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      firstName: stringType
+      id: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
+      firstName: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}first_name']),
-      lastName: stringType
+      lastName: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}last_name']),
-      avatar:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
-      shortBio: stringType
+      avatar: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}avatar']),
+      shortBio: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}short_bio']),
-      lookingFor: stringType
+      lookingFor: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}looking_for']),
-      longBio: stringType
+      longBio: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}long_bio']),
-      experience: doubleType
+      experience: const RealType()
           .mapFromDatabaseResponse(data['${effectivePrefix}experience']),
-      age: intType.mapFromDatabaseResponse(data['${effectivePrefix}age']),
-      externalLink: stringType
+      age: const IntType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}age']),
+      externalLink: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}external_link']),
-      location: stringType
+      location: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}location']),
-      skills:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}skills']),
+      skills: const StringType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}skills']),
     );
   }
   @override
@@ -1581,7 +1578,7 @@ class UserProfile extends DataClass implements Insertable<UserProfile> {
                                           $mrjc(location.hashCode,
                                               skills.hashCode))))))))))));
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       identical(this, other) ||
       (other is UserProfile &&
           other.id == this.id &&
