@@ -24,22 +24,26 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^5.0.0
-  retrofit: any
-  json_annotation: ^4.0.0
-  flutter_secure_storage: any
-  logger: any
-  country_code_picker: any
-  sms_autofill: ^1.3.1
-  # floor: 0.19.1
-  cached_network_image: ^2.5.1
+  retrofit: ^2.0.0
+  json_annotation: ^4.0.1
+  flutter_secure_storage:  ^4.2.0
+  logger: ^1.0.0
+  country_code_picker: ^2.0.1
+  sms_autofill: ^2.0.0
+  octo_image: ^1.0.0+1
+  flutter_blurhash: ^0.6.0
+  cached_network_image: ^3.0.2
   timeago: ^3.0.2
-  websocket_manager: ^0.2.2
+  websocket_manager:
+    git:
+      url: git://github.com/Syaba999/flutter_websocket_plugin
+      ref: nullsafety
   bubble: ^1.2.1
   moor: ^4.2.1
   sqlite3_flutter_libs: ^0.4.1
   path_provider: ^2.0.1
   path: ^1.8.0
-  badges: ^1.2.0
+  badges: ^2.0.1
   flutter_screenutil: ^5.0.0
   readmore: ^2.0.0
 
@@ -54,7 +58,7 @@ dev_dependencies:
   retrofit_generator: any
   build_runner: any
   moor_generator: ^4.2.1
-  json_serializable: ^4.1.0
+  json_serializable: ^4.1.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

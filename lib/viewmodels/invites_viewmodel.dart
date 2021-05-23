@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:collection';
 
 import 'package:Matework/converts/invites_converter.dart';
@@ -16,12 +14,12 @@ import '../database.dart';
 
 class InvitesViewModel extends ChangeNotifier {
   static const INVITES_UPDATE_AT = "InvitesFromApi";
-  InvitesRestClient invitesRestClient;
-  AppDatabase db;
+  late InvitesRestClient invitesRestClient;
+  late AppDatabase db;
 
   FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
-  Stream<List<Invite>> _invites;
+  late Stream<List<Invite>> _invites;
 
   set setAppDatabase(AppDatabase db) {
     this.db = db;
@@ -36,14 +34,14 @@ class InvitesViewModel extends ChangeNotifier {
 
   Future<Tuple2<bool, String>> acceptInvite(int inviteId) async {
     try {
-      final response = await invitesRestClient?.acceptInvite(inviteId);
+      final response = await invitesRestClient.acceptInvite(inviteId);
       db.deleteInviteById(inviteId);
       return new Tuple2(true, response.message);
     } on DioError catch (e) {
       return new Tuple2(
           false,
           (e.response?.data != null
-              ? e.response.data["message"]
+              ? e.response?.data["message"]
               : SOMETHING_WRONG));
     }
   }
@@ -59,7 +57,7 @@ class InvitesViewModel extends ChangeNotifier {
       return new Tuple2(
         false,
         (e.response?.data != null
-            ? e.response.data["message"]
+            ? e.response?.data["message"]
             : SOMETHING_WRONG),
       );
     }
@@ -74,7 +72,7 @@ class InvitesViewModel extends ChangeNotifier {
       return new Tuple2(
           false,
           (e.response?.data != null
-              ? e.response.data["message"]
+              ? e.response?.data["message"]
               : SOMETHING_WRONG));
     }
   }
@@ -89,12 +87,12 @@ class InvitesViewModel extends ChangeNotifier {
     final updateAt = int.parse(tsString);
     if (updateAt != 0 && updateAt > currentTs) return;
     try {
-      final apiResponse = await invitesRestClient?.getAllInvites();
+      final apiResponse = await invitesRestClient.getAllInvites();
       final dbInvites = await db.getAllInvites();
       final allSeen = dbInvites.expand((e) => e.seen ? [e.id] : []).toSet();
 
-      final inviteResponse = apiResponse?.data?.invites;
-      final invites = inviteResponse?.map((e) {
+      final inviteResponse = apiResponse.data.invites;
+      final invites = inviteResponse.map((e) {
         return inviteFromInvitesResponse(e, allSeen.contains(e.id));
       });
 

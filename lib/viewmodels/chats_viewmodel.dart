@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:Matework/converts/chats_converter.dart';
 import 'package:Matework/network/chats_rest_client.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +9,8 @@ import '../database.dart';
 class ChatsViewModel extends ChangeNotifier {
   static const CHAT_USERS_UPDATE_AT = "ChatUsersFromApiUpdateAt";
 
-  ChatsRestClient chatsRestClient;
-  AppDatabase db;
+  late ChatsRestClient chatsRestClient;
+  late AppDatabase db;
   FlutterSecureStorage secureStorage = FlutterSecureStorage();
 
   set setAppDatabase(AppDatabase db) {
@@ -20,7 +18,7 @@ class ChatsViewModel extends ChangeNotifier {
     _chatUsers = db.watchAllChatUsers();
   }
 
-  Stream<List<ChatUser>> _chatUsers;
+  late Stream<List<ChatUser>> _chatUsers;
   Stream<List<ChatUser>> get getChatUsers => _chatUsers;
 
   set setChatsRestClient(ChatsRestClient chatsRestClient) {
@@ -34,15 +32,15 @@ class ChatsViewModel extends ChangeNotifier {
     final updateAt = int.parse(tsString);
     if (updateAt != 0 && updateAt > currentTs) return;
     try {
-      final apiResponse = await chatsRestClient?.getAllChatUsers();
+      final apiResponse = await chatsRestClient.getAllChatUsers();
       final chatsResponse = apiResponse.data.chats;
       final chats = chatsResponse.map((e) {
         return chatUserResponseToChatUser(e);
       }).toList();
 
-      if (chats != null) {
-        db?.deleteAllAndinsertChatUsers(chats);
-      }
+      // if (chats != null) {
+      db.deleteAllAndinsertChatUsers(chats);
+      // }
       final nextUpdateAt =
           DateTime.now().add(Duration(minutes: 15)).millisecondsSinceEpoch;
       secureStorage.write(

@@ -10,7 +10,7 @@ class SocketConnectionManager {
     print("setupConnection");
     final token = await FlutterSecureStorage().read(key: AUTHORIZATION);
     final socket = WebsocketManager(BASE_SOCKET_URL, {
-      AUTHORIZATION: token,
+      AUTHORIZATION: token!,
     });
     socket.close();
     socket.connect();

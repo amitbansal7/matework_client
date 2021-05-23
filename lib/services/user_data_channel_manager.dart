@@ -24,7 +24,8 @@ class UserDataChannelManager {
   }
 
   void _init() async {
-    myId = int.parse(await secureStorage.read(key: My_ID));
+    final idStr = await secureStorage.read(key: My_ID);
+    myId = int.parse(idStr!);
     print("MyIDINUserDataChannelManager -> ${myId}");
   }
 

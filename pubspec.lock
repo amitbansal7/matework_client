@@ -49,7 +49,7 @@ packages:
       name: badges
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -126,7 +126,21 @@ packages:
       name: cached_network_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.5.1"
+    version: "3.1.0-alpha.1"
+  cached_network_image_platform_interface:
+    dependency: transitive
+    description:
+      name: cached_network_image_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0-alpha.0"
+  cached_network_image_web:
+    dependency: transitive
+    description:
+      name: cached_network_image_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0-alpha.0"
   characters:
     dependency: transitive
     description:
@@ -189,7 +203,7 @@ packages:
       name: country_code_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.0"
+    version: "2.0.1"
   crypto:
     dependency: transitive
     description:
@@ -252,19 +266,19 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_blurhash:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_blurhash
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0"
+    version: "0.6.0"
   flutter_cache_manager:
     dependency: transitive
     description:
       name: flutter_cache_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "3.0.2"
   flutter_screenutil:
     dependency: "direct main"
     description:
@@ -278,7 +292,7 @@ packages:
       name: flutter_secure_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.3"
+    version: "4.2.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -353,14 +367,14 @@ packages:
       name: json_serializable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.1.2"
   logger:
     dependency: "direct main"
     description:
       name: logger
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.4"
+    version: "1.0.0"
   logging:
     dependency: transitive
     description:
@@ -389,6 +403,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.7"
+  modal_bottom_sheet:
+    dependency: transitive
+    description:
+      name: modal_bottom_sheet
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   moor:
     dependency: "direct main"
     description:
@@ -411,12 +432,12 @@ packages:
     source: hosted
     version: "1.0.0"
   octo_image:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: octo_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "1.0.0+1"
   package_config:
     dependency: transitive
     description:
@@ -486,7 +507,7 @@ packages:
       name: pin_input_text_field
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.1"
+    version: "4.1.0"
   platform:
     dependency: transitive
     description:
@@ -563,7 +584,7 @@ packages:
       name: retrofit
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0-beta1"
+    version: "2.0.0"
   retrofit_generator:
     dependency: "direct dev"
     description:
@@ -577,7 +598,7 @@ packages:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.25.0"
+    version: "0.27.0"
   shelf:
     dependency: transitive
     description:
@@ -603,7 +624,7 @@ packages:
       name: sms_autofill
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.1"
+    version: "2.0.0"
   source_gen:
     dependency: transitive
     description:
@@ -730,6 +751,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0"
+  universal_platform:
+    dependency: transitive
+    description:
+      name: universal_platform
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0-nullsafety"
   uuid:
     dependency: transitive
     description:
@@ -761,9 +789,11 @@ packages:
   websocket_manager:
     dependency: "direct main"
     description:
-      name: websocket_manager
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: nullsafety
+      resolved-ref: "9d470c46e323a230a366baff256e12d610e3206e"
+      url: "git://github.com/Syaba999/flutter_websocket_plugin"
+    source: git
     version: "0.2.2"
   win32:
     dependency: transitive
@@ -794,5 +824,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.12.0 <3.0.0"
-  flutter: ">=1.24.0-10"
+  dart: ">=2.13.0 <3.0.0"
+  flutter: ">=1.26.0-17.6.pre"

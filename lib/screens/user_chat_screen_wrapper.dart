@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -28,7 +26,7 @@ class UserChatScreenWrapper extends StatelessWidget {
   static final String routeName = "/chat";
   final int chatUserId;
 
-  UserChatScreenWrapper({this.chatUserId});
+  UserChatScreenWrapper({required this.chatUserId});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +36,7 @@ class UserChatScreenWrapper extends StatelessWidget {
             ChatViewModel>(
           create: (_) => ChatViewModel(),
           update: (_, db, chatsRestClient, viewModel) {
-            viewModel.setAppDatabase = db;
+            viewModel!.setAppDatabase = db;
             viewModel.setChatsRestClient = chatsRestClient;
             viewModel.chatUserId = chatUserId;
             return viewModel;
@@ -66,7 +64,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
       future: chatViewModel.getChatUser(),
       builder: (context, chatUserFuture) {
         if (chatUserFuture.connectionState == ConnectionState.done) {
-          return _createScaffold(context, chatUserFuture.data);
+          return _createScaffold(context, chatUserFuture.data!);
         } else {
           return Scaffold(
             body: Center(child: CircularProgressIndicator()),
@@ -79,7 +77,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
   Widget _createScaffold(BuildContext context, ChatUser chatUser) {
     final db = Provider.of<AppDatabase>(context, listen: false);
     final messageController = TextEditingController();
-    int myId;
+    int? myId;
     db.markAllChatMessageSeenByInviteId(chatUser.inviteId);
     // ScrollController _scrollController = new ScrollController();
 
@@ -155,7 +153,7 @@ class _UserChatScreenState extends State<UserChatScreen> {
                         inviteId: Value(chatUser.inviteId),
                         createdAt: Value(
                             DateTime.now().millisecondsSinceEpoch ~/ 1000),
-                        senderId: Value(myId),
+                        senderId: Value(myId!),
                         sent: Value(false),
                         seen: Value(true),
                       ),
