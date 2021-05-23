@@ -1,5 +1,6 @@
 import 'package:Matework/main.dart';
 import 'package:Matework/network/auth_rest_client.dart';
+import 'package:Matework/viewmodels/auth_viewmodel.dart';
 import 'package:Matework/widgets/auth_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,23 +12,15 @@ import '../utils.dart';
 
 class AuthScreen extends StatelessWidget {
   static final routeName = "/";
+  final authToken =
+      FlutterSecureStorage().read(key: AUTHORIZATION).then((value) => value!);
   @override
   Widget build(BuildContext context) {
-    final storage = Provider.of<FlutterSecureStorage>(context);
     return FutureBuilder<String>(
-      future: storage.read(key: AUTHORIZATION),
+      future: authToken,
       builder: (context, token) {
         if (token.connectionState == ConnectionState.done) {
-          return MultiProvider(
-            providers: [
-              ProxyProvider<Dio, AuthRestClient>(
-                update: (_, dio, __) {
-                  return AuthRestClient(dio);
-                },
-              )
-            ],
-            child: Scaffold(body: AuthWidget()),
-          );
+          return Scaffold(body: AuthWidget());
         } else {
           return Center(child: CircularProgressIndicator());
         }

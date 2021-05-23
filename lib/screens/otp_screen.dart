@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Matework/main.dart';
 import 'package:Matework/network/auth_rest_client.dart';
 import 'package:Matework/screens/home_screen.dart';
+import 'package:Matework/viewmodels/auth_viewmodel.dart';
 import 'package:Matework/widgets/my_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -37,13 +38,10 @@ class _OtpScreenState extends State<OtpScreen> {
   String _otp = "";
   @override
   Widget build(BuildContext context) {
-    // final params =
-    //     ModalRoute.of(context).settings.arguments as Map<String, String>;
-
     final storage = FlutterSecureStorage();
     final dio = Provider.of<Dio>(context);
-    final restClient = AuthRestClient(dio);
     final logger = Provider.of<Logger>(context, listen: false);
+    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
 
     return Center(
       child: Container(
@@ -73,10 +71,10 @@ class _OtpScreenState extends State<OtpScreen> {
                 currentCode: _otp,
                 onCodeSubmitted: (code) {},
                 onCodeChanged: (code) {
-                  if (code.length == 4) {
+                  if (code?.length == 4) {
                     FocusScope.of(context).requestFocus(FocusNode());
                   }
-                  _otp = code;
+                  _otp = code!;
                 },
               ),
               SizedBox(height: 35.h),
@@ -97,30 +95,28 @@ class _OtpScreenState extends State<OtpScreen> {
                       fontSize: 12.sp,
                     ),
                   ),
-                  onPressed: () {
-                    restClient.verify(widget.phone, _otp).then((res) {
-                      storage.write(key: AUTHORIZATION, value: res.data.token);
-                      print(res.data.token);
-                      dio.options.headers[AUTHORIZATION] = res.data.token;
+                  onPressed: () async {
+                    final response =
+                        await authViewModel.verifyOtp(widget.phone, _otp);
+                    if (response.item1) {
                       storage.write(
-                          key: My_ID, value: res.data.user.id.toString());
+                          key: AUTHORIZATION, value: response.item2.data.token);
+                      print(response.item2.data.token);
+                      dio.options.headers[AUTHORIZATION] =
+                          response.item2.data.token;
+                      storage.write(
+                          key: My_ID,
+                          value: response.item2.data.user.id.toString());
                       Navigator.pop(context);
                       Navigator.pushReplacementNamed(
                           context, HomeScreen.routeName);
-                    }).catchError((Object obj) {
-                      switch (obj.runtimeType) {
-                        case DioError:
-                          final res = (obj as DioError).response;
-                          ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
-                                  message: res!.data["message"], error: true)
-                              .getSnackbar());
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+                              message: response.item2.message, error: true)
+                          .getSnackbar());
 
-                          logger.e(
-                              "Wrong creds ${res.statusCode} -> ${res.statusMessage}");
-                          break;
-                        default:
-                      }
-                    });
+                      logger.e("Wrong creds ${response.item2}");
+                    }
                   },
                 ),
               ),

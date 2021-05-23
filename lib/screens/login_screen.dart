@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:Matework/network/auth_rest_client.dart';
 import 'package:Matework/screens/otp_screen.dart';
 import 'package:Matework/utils.dart';
+import 'package:Matework/viewmodels/auth_viewmodel.dart';
 import 'package:Matework/widgets/my_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:country_code_picker/country_code_picker.dart';
@@ -28,6 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authRestClient = Provider.of<AuthRestClient>(context);
+
     return Container(
       margin: EdgeInsets.all(12.w),
       padding: EdgeInsets.only(bottom: 70.w),
@@ -99,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _sendOtpButton() {
-    final authClient = Provider.of<AuthRestClient>(context, listen: false);
+    final authViewModel = Provider.of<AuthViewModel>(context, listen: false);
     final logger = Provider.of<Logger>(context, listen: false);
     return Container(
       width: 130.w,
@@ -118,28 +121,18 @@ class _LoginScreenState extends State<LoginScreen> {
             fontSize: 13.sp,
           ),
         ),
-        onPressed: () {
-          final ctx = context;
-          authClient.sendOtp(_finalPhone()).then((it) {
-            // Scaffold.of(ctx).showSnackBar(
-            //     MySnackBar(message: it.message, error: false).getSnackbar());
+        onPressed: () async {
+          final response = await authViewModel.sendOtp(_finalPhone());
+          if (response.item1) {
             Navigator.of(context).pushNamed(OtpScreenWrapper.routeName,
                 arguments: {"phone": _finalPhone()});
-          }).catchError((Object obj) {
-            // non-200 error goes here.
-            switch (obj.runtimeType) {
-              case DioError:
-                final res = (obj as DioError).response;
-                ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
-                  message: SOMETHING_WRONG,
-                  error: true,
-                ).getSnackbar());
-                logger.e(
-                    "Got error : ${res!.statusCode} -> ${res.statusMessage}");
-                break;
-              default:
-            }
-          });
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+              message: SOMETHING_WRONG,
+              error: true,
+            ).getSnackbar());
+            logger.e("Got error : ${response.item2}");
+          }
         },
       ),
     );
