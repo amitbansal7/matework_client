@@ -26,14 +26,14 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final authToken =
-      FlutterSecureStorage().read(key: AUTHORIZATION).then((value) => value!);
+  late Future<String?> authToken =
+      FlutterSecureStorage().read(key: AUTHORIZATION);
 
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: Size(360, 690),
-      builder: () => FutureBuilder<String>(
+      builder: () => FutureBuilder<String?>(
         future: authToken,
         builder: (context, token) {
           if (token.connectionState == ConnectionState.done) {
@@ -44,7 +44,9 @@ class MyApp extends StatelessWidget {
                 Provider<Dio>(
                   create: (context) {
                     final dio = Dio();
-                    dio.options.headers[AUTHORIZATION] = token.data;
+                    if (token.data != null) {
+                      dio.options.headers[AUTHORIZATION] = token.data;
+                    }
                     return dio;
                   },
                 ),
@@ -82,7 +84,9 @@ class MyApp extends StatelessWidget {
               child: MaterialApp(
                 title: 'Matework',
                 onGenerateRoute: (settings) {
-                  final arguments = settings.arguments as Map<String, dynamic>;
+                  Map<String, dynamic> arguments = (settings.arguments ??
+                      Map<String, dynamic>()) as Map<String, dynamic>;
+
                   if (settings.name == LoginScreen.routeName) {
                     return SlideLeftRoute(page: LoginScreen());
                   } else if (settings.name == HomeScreen.routeName) {

@@ -12,11 +12,10 @@ import '../utils.dart';
 
 class AuthScreen extends StatelessWidget {
   static final routeName = "/";
-  final authToken =
-      FlutterSecureStorage().read(key: AUTHORIZATION).then((value) => value!);
+  final authToken = FlutterSecureStorage().read(key: AUTHORIZATION);
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<String>(
+    return FutureBuilder<String?>(
       future: authToken,
       builder: (context, token) {
         if (token.connectionState == ConnectionState.done) {

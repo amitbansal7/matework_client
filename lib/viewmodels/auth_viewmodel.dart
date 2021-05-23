@@ -24,25 +24,18 @@ class AuthViewModel extends ChangeNotifier {
       return new Tuple2(true, response.message);
     } on DioError catch (e) {
       print(e.toString());
-      return new Tuple2(
-          false,
-          (e.response?.data != null
-              ? e.response?.data["message"]
-              : SOMETHING_WRONG));
+      return new Tuple2(false, e.response?.data?["message"] ?? SOMETHING_WRONG);
     }
   }
 
-  Future<Tuple2<bool, ApiResponse<AuthResponse>>> verifyOtp(
+  Future<Tuple2<bool, ApiResponse<AuthResponse>?>> verifyOtp(
       String phoneNumber, String otp) async {
     try {
       final response = await authRestClient.verify(phoneNumber, otp);
       return new Tuple2(true, response);
     } on DioError catch (e) {
-      return new Tuple2(
-          false,
-          (e.response?.data != null
-              ? e.response?.data["message"]
-              : SOMETHING_WRONG));
+      print(e.response!.data.toString());
+      return new Tuple2(false, null);
     }
   }
 }

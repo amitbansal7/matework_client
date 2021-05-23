@@ -52,12 +52,12 @@ class _InvitesRestClient implements InvitesRestClient {
   }
 
   @override
-  Future<ApiResponse<String>> acceptInvite(inviteId) async {
+  Future<ApiResponse<Map<String, dynamic>>> acceptInvite(inviteId) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = {'invite_id': inviteId};
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ApiResponse<String>>(Options(
+        _setStreamType<ApiResponse<Map<String, dynamic>>>(Options(
                 method: 'PUT',
                 headers: <String, dynamic>{},
                 extra: _extra,
@@ -65,17 +65,17 @@ class _InvitesRestClient implements InvitesRestClient {
             .compose(_dio.options, '/accept',
                 queryParameters: queryParameters, data: _data)
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ApiResponse<String>.fromJson(_result.data!);
+    final value = ApiResponse<Map<String, dynamic>>.fromJson(_result.data!);
     return value;
   }
 
   @override
-  Future<ApiResponse<String>> deleteInvite(inviteId) async {
+  Future<ApiResponse<Map<String, dynamic>>> deleteInvite(inviteId) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = {'invite_id': inviteId};
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ApiResponse<String>>(Options(
+        _setStreamType<ApiResponse<Map<String, dynamic>>>(Options(
                 method: 'DELETE',
                 headers: <String, dynamic>{},
                 extra: _extra,
@@ -83,7 +83,7 @@ class _InvitesRestClient implements InvitesRestClient {
             .compose(_dio.options, '',
                 queryParameters: queryParameters, data: _data)
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ApiResponse<String>.fromJson(_result.data!);
+    final value = ApiResponse<Map<String, dynamic>>.fromJson(_result.data!);
     return value;
   }
 

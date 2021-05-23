@@ -100,20 +100,20 @@ class _OtpScreenState extends State<OtpScreen> {
                         await authViewModel.verifyOtp(widget.phone, _otp);
                     if (response.item1) {
                       storage.write(
-                          key: AUTHORIZATION, value: response.item2.data.token);
-                      print(response.item2.data.token);
+                          key: AUTHORIZATION,
+                          value: response.item2?.data.token);
+                      print(response.item2?.data.token);
                       dio.options.headers[AUTHORIZATION] =
-                          response.item2.data.token;
+                          response.item2?.data.token;
                       storage.write(
                           key: My_ID,
-                          value: response.item2.data.user.id.toString());
-                      Navigator.pop(context);
+                          value: response.item2?.data.user.id.toString());
                       Navigator.pushReplacementNamed(
                           context, HomeScreen.routeName);
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
-                              message: response.item2.message, error: true)
-                          .getSnackbar());
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          MySnackBar(message: SOMETHING_WRONG, error: true)
+                              .getSnackbar());
 
                       logger.e("Wrong creds ${response.item2}");
                     }

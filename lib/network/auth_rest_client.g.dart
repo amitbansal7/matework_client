@@ -16,12 +16,12 @@ class _AuthRestClient implements AuthRestClient {
   String? baseUrl;
 
   @override
-  Future<ApiResponse<AuthResponse>> sendOtp(phoneNumber) async {
+  Future<ApiResponse<Map<String, dynamic>>> sendOtp(phoneNumber) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _data = {'phone_number': phoneNumber};
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ApiResponse<AuthResponse>>(Options(
+        _setStreamType<ApiResponse<Map<String, dynamic>>>(Options(
                 method: 'POST',
                 headers: <String, dynamic>{},
                 extra: _extra,
@@ -29,7 +29,7 @@ class _AuthRestClient implements AuthRestClient {
             .compose(_dio.options, 'o/users/login',
                 queryParameters: queryParameters, data: _data)
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ApiResponse<AuthResponse>.fromJson(_result.data!);
+    final value = ApiResponse<Map<String, dynamic>>.fromJson(_result.data!);
     return value;
   }
 

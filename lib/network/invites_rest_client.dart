@@ -24,9 +24,11 @@ abstract class InvitesRestClient {
 
   @PUT("/accept")
   @FormUrlEncoded()
-  Future<ApiResponse<String>> acceptInvite(@Field("invite_id") int inviteId);
+  Future<ApiResponse<Map<String, dynamic>>> acceptInvite(
+      @Field("invite_id") int inviteId);
 
   @DELETE("")
   @FormUrlEncoded()
-  Future<ApiResponse<String>> deleteInvite(@Field("invite_id") int inviteId);
+  Future<ApiResponse<Map<String, dynamic>>> deleteInvite(
+      @Field("invite_id") int inviteId);
 }

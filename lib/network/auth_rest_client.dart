@@ -12,7 +12,7 @@ abstract class AuthRestClient {
 
   @POST("o/users/login")
   @FormUrlEncoded()
-  Future<ApiResponse<AuthResponse>> sendOtp(
+  Future<ApiResponse<Map<String, dynamic>>> sendOtp(
       @Field("phone_number") String phoneNumber);
 
   @POST("o/users/verify")

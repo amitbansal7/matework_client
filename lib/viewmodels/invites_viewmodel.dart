@@ -38,11 +38,7 @@ class InvitesViewModel extends ChangeNotifier {
       db.deleteInviteById(inviteId);
       return new Tuple2(true, response.message);
     } on DioError catch (e) {
-      return new Tuple2(
-          false,
-          (e.response?.data != null
-              ? e.response?.data["message"]
-              : SOMETHING_WRONG));
+      return new Tuple2(false, e.response?.data?["message"] ?? SOMETHING_WRONG);
     }
   }
 
@@ -54,12 +50,7 @@ class InvitesViewModel extends ChangeNotifier {
       final response = await invitesRestClient.createInvite(toUserId, message);
       return new Tuple2(true, response.message);
     } on DioError catch (e) {
-      return new Tuple2(
-        false,
-        (e.response?.data != null
-            ? e.response?.data["message"]
-            : SOMETHING_WRONG),
-      );
+      return new Tuple2(false, e.response?.data?["message"] ?? SOMETHING_WRONG);
     }
   }
 
@@ -69,11 +60,7 @@ class InvitesViewModel extends ChangeNotifier {
       db.deleteInviteById(inviteId);
       return new Tuple2(true, response.message);
     } on DioError catch (e) {
-      return new Tuple2(
-          false,
-          (e.response?.data != null
-              ? e.response?.data["message"]
-              : SOMETHING_WRONG));
+      return new Tuple2(false, e.response?.data?["message"] ?? SOMETHING_WRONG);
     }
   }
 

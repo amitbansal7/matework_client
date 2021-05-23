@@ -26,25 +26,18 @@ class _Converter<T> implements JsonConverter<T, Object> {
 
   @override
   T fromJson(Object json) {
-    if (json is Map<String, dynamic> &&
-        json.containsKey('user') &&
-        json.containsKey('token')) {
-      return AuthResponse.fromJson(json) as T;
+    final map = json as Map<String, dynamic>;
+    if (map.containsKey('user') && map.containsKey('token')) {
+      return AuthResponse.fromJson(map) as T;
+    } else if (map.containsKey('invites')) {
+      return InvitesResponse.fromJson(map) as T;
+    } else if (map.containsKey('chats')) {
+      return ChatsResponse.fromJson(map) as T;
+    } else if (map.containsKey('profile')) {
+      return UserProfileResponse.fromJson(map) as T;
+    } else {
+      return map as T;
     }
-
-    if (json is Map<String, dynamic> && json.containsKey('invites')) {
-      return InvitesResponse.fromJson(json) as T;
-    }
-
-    if (json is Map<String, dynamic> && json.containsKey('chats')) {
-      return ChatsResponse.fromJson(json) as T;
-    }
-
-    if (json is Map<String, dynamic> && json.containsKey('profile')) {
-      return UserProfileResponse.fromJson(json) as T;
-    }
-
-    return json as T;
   }
 
   @override
