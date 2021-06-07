@@ -72,7 +72,7 @@ class InvitesViewModel extends ChangeNotifier {
     final currentTs = DateTime.now().millisecondsSinceEpoch;
     final tsString = (await secureStorage.read(key: INVITES_UPDATE_AT)) ?? "0";
     final updateAt = int.parse(tsString);
-    if (updateAt != 0 && updateAt > currentTs) return;
+    // if (updateAt != 0 && updateAt > currentTs) return;
     try {
       final apiResponse = await invitesRestClient.getAllInvites();
       final dbInvites = await db.getAllInvites();

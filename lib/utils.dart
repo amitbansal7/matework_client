@@ -1,6 +1,6 @@
 import 'dart:io';
 
-const BASE_DOMAIN = "192.168.1.6";
+const BASE_DOMAIN = "192.168.1.8";
 const BASE_SOCKET_URL = "ws://$BASE_DOMAIN:3334/cable";
 const AUTHORIZATION = "Authorization";
 const String BASE_API_URL = "http://$BASE_DOMAIN:3000/api";

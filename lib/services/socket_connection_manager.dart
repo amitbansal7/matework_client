@@ -7,7 +7,6 @@ import '../utils.dart';
 
 class SocketConnectionManager {
   void setupConnection() async {
-    print("setupConnection");
     final token = await FlutterSecureStorage().read(key: AUTHORIZATION);
     final socket = WebsocketManager(BASE_SOCKET_URL, {
       AUTHORIZATION: token!,

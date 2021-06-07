@@ -83,6 +83,8 @@ class MyApp extends StatelessWidget {
               ],
               child: MaterialApp(
                 title: 'Matework',
+                theme: ThemeData(
+                    scaffoldBackgroundColor: Color.fromRGBO(255, 250, 245, 1)),
                 onGenerateRoute: (settings) {
                   Map<String, dynamic> arguments = (settings.arguments ??
                       Map<String, dynamic>()) as Map<String, dynamic>;

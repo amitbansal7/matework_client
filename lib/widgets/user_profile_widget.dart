@@ -19,7 +19,6 @@ class UserProfileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(this.userId);
     final userProfileViewModel =
         Provider.of<UserProfileViewModel>(context, listen: false);
     return StreamBuilder<UserProfile>(

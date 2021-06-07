@@ -31,7 +31,6 @@ class UserProfileViewModel extends ChangeNotifier {
     }
 
     final profile = response.data.profile;
-    print(profile);
     final userProfile = UserProfilesCompanion(
       id: Value(profile.id),
       firstName: Value(profile.firstName),

@@ -75,7 +75,6 @@ class UserDataChannelManager {
           !data.containsKey("message")) {
         return;
       }
-      print(data);
 
       final type = data["message"]["type"];
       final packet = data["message"]["packet"];
@@ -109,7 +108,6 @@ class UserDataChannelManager {
     if (packet["sender_id"] == myId) {
       db.markChatMessageAsSend(packet["message_client_id"], packet["id"]);
     } else {
-      print("Inserting message");
       db.insertChatMessage(
         ChatMessagesCompanion(
           serverId: Value(packet["id"]),
@@ -128,10 +126,8 @@ class UserDataChannelManager {
   }
 
   void _sendUnSendMessages() {
-    print("_sendUnSendMessages 1");
     db.watchAllUnSentMessages().listen((messages) {
       messages.forEach((message) {
-        print("Sending unsend message ");
         sendMessage(message);
       });
     });

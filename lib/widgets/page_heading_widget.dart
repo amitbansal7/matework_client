@@ -14,7 +14,7 @@ class PageHeadingWidget extends StatelessWidget {
         title,
         style: TextStyle(
           color: Colors.black,
-          fontSize: 20.sp,
+          fontSize: 25.sp,
           fontFamily: "PlayfairDisplay",
           fontWeight: FontWeight.w600,
         ),

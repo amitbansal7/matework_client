@@ -23,7 +23,6 @@ class AuthViewModel extends ChangeNotifier {
       final response = await authRestClient.sendOtp(phoneNumber);
       return new Tuple2(true, response.message);
     } on DioError catch (e) {
-      print(e.toString());
       return new Tuple2(false, e.response?.data?["message"] ?? SOMETHING_WRONG);
     }
   }
@@ -34,7 +33,6 @@ class AuthViewModel extends ChangeNotifier {
       final response = await authRestClient.verify(phoneNumber, otp);
       return new Tuple2(true, response);
     } on DioError catch (e) {
-      print(e.response!.data.toString());
       return new Tuple2(false, null);
     }
   }

@@ -6,6 +6,7 @@ import 'package:Matework/repositories/chats_repository.dart';
 import 'package:Matework/repositories/invites_repository.dart';
 import 'package:Matework/screens/chats_screen.dart';
 import 'package:Matework/screens/invites_screen.dart';
+import 'package:Matework/screens/settings_screen.dart';
 import 'package:Matework/screens/user_profile_wrapper.dart';
 import 'package:Matework/services/user_data_channel_manager.dart';
 import 'package:Matework/viewmodels/chats_viewmodel.dart';
@@ -41,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ExploreScreen(),
     InvitesScreen(),
     ChatsScreen(),
-    UserProfileScreenWrapper(userId: 1),
+    SettingsScreen(),
   ];
 
   @override

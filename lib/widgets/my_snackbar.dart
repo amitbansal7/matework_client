@@ -10,9 +10,10 @@ class MySnackBar {
     return SnackBar(
       content: Text(message ?? ""),
       elevation: 2,
+      margin: EdgeInsets.only(bottom: 60),
       // margin: EdgeInsetsGeometry.infinity,
       behavior: SnackBarBehavior.floating,
-      duration: Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 500),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.r))),
       backgroundColor: error ? Colors.red : Colors.green,

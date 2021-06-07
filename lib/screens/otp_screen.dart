@@ -102,7 +102,6 @@ class _OtpScreenState extends State<OtpScreen> {
                       storage.write(
                           key: AUTHORIZATION,
                           value: response.item2?.data.token);
-                      print(response.item2?.data.token);
                       dio.options.headers[AUTHORIZATION] =
                           response.item2?.data.token;
                       storage.write(

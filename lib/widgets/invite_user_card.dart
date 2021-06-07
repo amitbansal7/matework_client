@@ -5,6 +5,7 @@ import 'package:Matework/screens/user_profile_wrapper.dart';
 import 'package:Matework/services/user_data_channel_manager.dart';
 import 'package:Matework/viewmodels/invites_viewmodel.dart';
 import 'package:Matework/widgets/my_snackbar.dart';
+import 'package:bubble/bubble.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:moor/moor.dart' hide Column;
@@ -24,7 +25,7 @@ class InviteUserCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
-      elevation: 4,
+      elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
@@ -88,41 +89,39 @@ class InviteUserCard extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Container(
-              constraints: BoxConstraints(
-                minHeight: 40.0,
-              ),
+              padding: EdgeInsets.symmetric(vertical: 2),
               width: double.infinity,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF2F5F8),
-                border: Border.all(
-                  color: const Color(0xFFCDCFD2),
-                  width: 2.0,
-                ),
-              ),
-              child: Container(
-                padding: EdgeInsets.all(10),
-                child: ReadMoreText(
-                  invite.message ?? "",
-                  trimLines: 2,
-                  style: TextStyle(color: Colors.black),
-                  colorClickableText: Colors.black,
-                  trimMode: TrimMode.Line,
-                  trimCollapsedText: 'Show more',
-                  trimExpandedText: 'Show less',
-                  lessStyle: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                  moreStyle: TextStyle(
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+              child: Bubble(
+                nip: BubbleNip.leftTop,
+                elevation: 1,
+                // color: Color.fromRGBO(255, 249, 242, 1),
+                borderColor: Colors.black,
+                borderWidth: 0.6,
+                child: Container(
+                  padding: EdgeInsets.all(4),
+                  child: ReadMoreText(
+                    invite.message ?? "",
+                    trimLines: 2,
+                    style: TextStyle(color: Colors.black, fontSize: 18),
+                    colorClickableText: Colors.black,
+                    trimMode: TrimMode.Line,
+                    trimCollapsedText: 'Show more',
+                    trimExpandedText: 'Show less',
+                    lessStyle: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    moreStyle: TextStyle(
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
