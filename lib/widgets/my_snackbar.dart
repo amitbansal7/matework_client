@@ -10,7 +10,7 @@ class MySnackBar {
     return SnackBar(
       content: Text(message ?? ""),
       elevation: 2,
-      margin: EdgeInsets.only(bottom: 60),
+      margin: EdgeInsets.only(bottom: 45),
       // margin: EdgeInsetsGeometry.infinity,
       behavior: SnackBarBehavior.floating,
       duration: Duration(milliseconds: 500),
