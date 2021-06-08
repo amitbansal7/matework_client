@@ -1,6 +1,9 @@
 import 'dart:io';
 
-const BASE_DOMAIN = "192.168.1.8";
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:dio/dio.dart';
+
+const BASE_DOMAIN = "192.168.1.4";
 const BASE_SOCKET_URL = "ws://$BASE_DOMAIN:3334/cable";
 const AUTHORIZATION = "Authorization";
 const String BASE_API_URL = "http://$BASE_DOMAIN:3000/api";
@@ -17,4 +20,12 @@ Future<bool> checkInternet() async {
     return false;
   }
   return false;
+}
+
+Future<bool> deleteAllData(Dio dio) async {
+  final flutterStorage = FlutterSecureStorage();
+  dio.options.headers.clear();
+  await flutterStorage.write(key: AUTHORIZATION, value: null);
+  await flutterStorage.write(key: My_ID, value: null);
+  return true;
 }

@@ -8,7 +8,7 @@ part of 'user_profiles_rest_client.dart';
 
 class _UserProfilesRestClient implements UserProfilesRestClient {
   _UserProfilesRestClient(this._dio, {this.baseUrl}) {
-    baseUrl ??= 'http://192.168.1.8:3000/api/v1/profiles';
+    baseUrl ??= 'http://192.168.1.4:3000/api/v1/profiles';
   }
 
   final Dio _dio;

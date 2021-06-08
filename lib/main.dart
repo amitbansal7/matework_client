@@ -108,7 +108,7 @@ class MyApp extends StatelessWidget {
                         page: UserChatScreenWrapper(
                             chatUserId: arguments["chatUserId"]));
                   } else {
-                    return MaterialPageRoute(builder: (_) => AuthScreen());
+                    return SlideLeftRoute(page: AuthScreen());
                   }
                 },
                 home: AuthScreen(),
