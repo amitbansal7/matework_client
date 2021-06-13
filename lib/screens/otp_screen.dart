@@ -107,6 +107,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       storage.write(
                           key: My_ID,
                           value: response.item2?.data.user.id.toString());
+                      Navigator.pop(context);
                       Navigator.pushReplacementNamed(
                           context, HomeScreen.routeName);
                     } else {
