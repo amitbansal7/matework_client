@@ -19,7 +19,6 @@ import 'package:dio/dio.dart';
 import '../utils.dart';
 import 'package:bubble/bubble.dart';
 import 'package:bubble/issue_clipper.dart';
-import 'package:websocket_manager/websocket_manager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UserChatScreenWrapper extends StatelessWidget {

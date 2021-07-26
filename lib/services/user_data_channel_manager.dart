@@ -7,13 +7,13 @@ import 'package:Matework/network/response/chat_user_response.dart';
 import 'package:Matework/network/response/invite_response.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:moor/moor.dart';
-import 'package:websocket_manager/websocket_manager.dart';
+import 'package:web_socket_channel/io.dart';
 
 import '../utils.dart';
 
 class UserDataChannelManager {
   final AppDatabase db;
-  late WebsocketManager socket;
+  late IOWebSocketChannel socket;
   final FlutterSecureStorage secureStorage;
   late int myId;
 
@@ -43,15 +43,27 @@ class UserDataChannelManager {
       }),
     });
 
-    socket.send(data);
+    _sendData(data);
+  }
+
+  void _sendData(String data) {
+    _ensureConnection();
+    socket.sink.add(data);
+  }
+
+  void _ensureConnection() {
+    try {
+      socket.sink.add("d");
+    } catch (e) {
+      _setupConnection();
+    }
   }
 
   void _setupConnection() async {
     final token = await FlutterSecureStorage().read(key: AUTHORIZATION);
     final urlWithToken = BASE_SOCKET_URL + "?$AUTHORIZATION=$token";
-    socket = WebsocketManager(urlWithToken);
-    socket.close();
-    socket.connect();
+    socket = IOWebSocketChannel.connect(Uri.parse(urlWithToken));
+
     final data = jsonEncode({
       "command": 'subscribe',
       "identifier": jsonEncode({
@@ -59,14 +71,16 @@ class UserDataChannelManager {
       }),
     });
 
-    socket.send(data);
+    socket.sink.add(data);
+
     _registerOnMessage();
-    socket.onClose((data) => print("Socket session Closed $data"));
+    // socket.onClose((data) => print("Socket session Closed $data"));
   }
 
   void _registerOnMessage() {
-    socket.onMessage((dynamic message) {
+    socket.stream.listen((dynamic message) {
       final Map<String, dynamic> data = json.decode(message);
+      print(message);
       if (data["type"] == "ping") {
         return;
       }
@@ -144,7 +158,6 @@ class UserDataChannelManager {
         "message_id": messageId,
       }),
     });
-
-    socket.send(data);
+    _sendData(data);
   }
 }
