@@ -114,11 +114,11 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: TextButton(
         child: Text(
-          "SEND OTP >",
+          "GET OTP",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
-            fontSize: 13.sp,
+            fontSize: 15.sp,
           ),
         ),
         onPressed: () async {
