@@ -4,6 +4,7 @@ import 'package:Matework/screens/auth_screen.dart';
 import 'package:Matework/screens/home_screen.dart';
 import 'package:Matework/screens/login_screen.dart';
 import 'package:Matework/screens/otp_screen.dart';
+import 'package:Matework/screens/edit_profile_screen.dart';
 import 'package:Matework/screens/user_chat_screen_wrapper.dart';
 import 'package:Matework/screens/user_profile_wrapper.dart';
 import 'package:Matework/utils.dart';
@@ -107,6 +108,8 @@ class MyApp extends StatelessWidget {
                     return SlideLeftRoute(
                         page: UserChatScreenWrapper(
                             chatUserId: arguments["chatUserId"]));
+                  } else if (settings.name == EditProfileScreen.routeName) {
+                    return SlideLeftRoute(page: EditProfileScreen());
                   } else {
                     return SlideLeftRoute(page: AuthScreen());
                   }

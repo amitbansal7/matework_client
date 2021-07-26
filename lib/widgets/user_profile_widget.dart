@@ -240,10 +240,12 @@ class UserProfileWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Container(
-                      padding: EdgeInsets.all(4.w),
+                      padding: EdgeInsets.all(5),
                       child: Text(
                         "${skill.name} • ${skill.rating}",
-                        style: TextStyle(fontSize: 12.sp),
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                        ),
                       ),
                     ),
                   ),

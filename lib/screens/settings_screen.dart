@@ -145,6 +145,7 @@ class SettingsScreen extends StatelessWidget {
 
   void _logout(Dio dio, BuildContext context) async {
     await deleteAllData(dio);
+
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     }

@@ -19,6 +19,7 @@ version: 1.0.0+1
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
+  flutter: 2.2.3
 
 dependencies:
   flutter:
@@ -34,10 +35,7 @@ dependencies:
   flutter_blurhash: ^0.6.0
   cached_network_image: ^3.0.2
   timeago: ^3.0.2
-  websocket_manager:
-    git:
-      url: git://github.com/Syaba999/flutter_websocket_plugin
-      ref: nullsafety
+  web_socket_channel: ^2.1.0
   bubble: ^1.2.1
   moor: ^4.2.1
   sqlite3_flutter_libs: ^0.4.1
@@ -45,6 +43,7 @@ dependencies:
   path: ^1.8.0
   badges: ^2.0.1
   flutter_screenutil: ^5.0.0
+  argon_buttons_flutter: ^1.1.0
   readmore: ^2.0.0
 
 
